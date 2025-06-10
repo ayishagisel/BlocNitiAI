@@ -84,12 +84,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRepairIssue(userId: string, data: InsertRepairIssue): Promise<RepairIssue> {
+    // Clean up date fields - convert empty strings to null
+    const cleanData = {
+      ...data,
+      userId,
+      firstRequestDate: data.firstRequestDate && data.firstRequestDate.trim() !== '' ? data.firstRequestDate : null,
+      issueBegan: data.issueBegan && data.issueBegan.trim() !== '' ? data.issueBegan : null,
+    };
+
     const [issue] = await db
       .insert(repairIssues)
-      .values({
-        ...data,
-        userId,
-      })
+      .values(cleanData)
       .returning();
     return issue;
   }
