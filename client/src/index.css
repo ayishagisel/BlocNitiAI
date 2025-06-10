@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(221, 83%, 53%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(159, 75%, 40%);
+  --secondary-foreground: hsl(160, 84%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Custom colors for BlocNiti */
+  --urgent: hsl(0, 74%, 42%);
+  --priority: hsl(25, 85%, 53%);
+  --non-urgent: hsl(215, 13%, 42%);
+  --alma-bg: hsl(221, 83%, 97%);
+  --success: hsl(159, 75%, 40%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(221, 83%, 53%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(159, 75%, 40%);
+  --secondary-foreground: hsl(160, 84%, 90%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Dark mode custom colors */
+  --urgent: hsl(0, 84%, 60%);
+  --priority: hsl(25, 95%, 63%);
+  --non-urgent: hsl(215, 23%, 52%);
+  --alma-bg: hsl(240, 10%, 8%);
+  --success: hsl(159, 75%, 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .tab-btn {
+    @apply px-4 py-2 rounded-lg font-medium text-gray-600 hover:text-primary hover:bg-primary/10 transition-all duration-200;
+  }
+  
+  .tab-btn.active {
+    @apply bg-primary text-white shadow-sm;
+  }
+  
+  .status-urgent {
+    @apply bg-red-600 text-white;
+    background-color: hsl(var(--urgent));
+  }
+  
+  .status-priority {
+    @apply text-white;
+    background-color: hsl(var(--priority));
+  }
+  
+  .status-non-urgent {
+    @apply text-white;
+    background-color: hsl(var(--non-urgent));
+  }
+  
+  .border-status-urgent {
+    border-left-color: hsl(var(--urgent));
+  }
+  
+  .border-status-priority {
+    border-left-color: hsl(var(--priority));
+  }
+  
+  .border-status-non-urgent {
+    border-left-color: hsl(var(--non-urgent));
+  }
+  
+  .alma-bg {
+    background-color: hsl(var(--alma-bg));
+  }
+}
