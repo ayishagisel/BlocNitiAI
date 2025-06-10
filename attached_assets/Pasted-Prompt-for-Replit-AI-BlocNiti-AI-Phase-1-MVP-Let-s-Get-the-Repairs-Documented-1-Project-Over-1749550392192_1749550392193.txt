@@ -1,0 +1,157 @@
+Prompt for Replit AI: BlocNiti AI - Phase 1 MVP: "Let's Get the Repairs Documented"
+
+1. Project Overview:
+
+Project Name: BlocNiti AI
+AI Assistant Name: Alma
+Purpose: To create a mobile-first tenant organizing platform for NYC renters, enabling them to document repair needs, understand their legal rights, and generate formal documentation.
+Target Audience: Renters in New York City, particularly those facing repair issues and potential landlord harassment.
+2. General Design and Aesthetics:
+
+Overall Style: Clean, modern, and user-friendly. Prioritize ease of use and accessibility.
+Color Scheme: Use a calming and trustworthy color palette. Consider blues, greens, and neutral tones. Avoid harsh or overly bright colors. Incorporate the color-coding scheme from the attached "A. Oglivie 720 W 170 #1D Repair Report.pdf" (Urgent, Priority, Non-Urgent).
+Typography: Use clear and readable fonts. Consider a sans-serif font for body text and a slightly bolder font for headings. Ensure sufficient contrast for readability.
+Responsiveness: The website MUST be fully responsive and work seamlessly on all devices (desktops, tablets, and smartphones).
+Accessibility: Adhere to WCAG guidelines for accessibility. Ensure proper color contrast, keyboard navigation, and screen reader compatibility.
+3. Key Features and Functionalities (Modules):
+
+Module 1: User Registration & Legal Context Intake
+Description: Collect user information and initial legal context.
+UI Elements:
+Form with fields for: First name, last name, date of birth, address, unit number, phone/email (all required).
+Two Yes/No questions:
+“Do you know your tenant organizer, building captain, or block association?”
+“Have you been threatened by your landlord?”
+Yes/No question: “Do you have an open eviction case?”
+Data Storage: Store all data securely in the backend database.
+Module 2: Tenant Repair Report Module
+Description: Allow tenants to input repair issues room-by-room.
+UI Elements:
+Dynamic form with the following fields for each repair issue:
+Room #: (Dropdown or Number Input)
+Room Name: (Dropdown with options like Kitchen, Bathroom, Bedroom, Living Room, Hallway, Foyer, Other - with a text field for "Other")
+Area/Amenity: (Dropdown with options like ceiling, window, radiator, floor, wall, appliance, plumbing, electrical, other - with a text field for "Other")
+Status: (Radio buttons: Non-Urgent, Priority, Urgent) - Color-code these options.
+Issue Description: (Free text - large text area)
+Proposed Remediation: (Free text - text area)
+Date of First Request to Landlord: (Date picker)
+Optional: When issue began (Date picker)
+"Add Repair Issue" button to dynamically add more repair entries.
+Color-Coding: Color-code each repair issue entry based on the "Status" (Urgent, Priority, Non-Urgent) as demonstrated in the attached "A. Oglivie 720 W 170 #1D Repair Report.pdf".
+Data Storage: Store all data securely in the backend database, associated with the user.
+Module 3: Violation Auto-Categorization (AI Module - Alma)
+Description: Use Alma (AI assistant) to analyze the issue text and predict HPD/DOB Hazard Class, assign deadlines, and explain legal urgency.
+Integration:
+Use OpenRouter API for LLM calls (GPT or similar).
+Prompt Chain: Design a prompt chain to:
+Detect violation class (A, B, C, or I - if applicable).
+Assign deadlines based on violation class (refer to "LawHelp HPD Violations Checklist.pdf" for deadlines).
+Format responses for display.
+UI Elements:
+Display the predicted HPD/DOB Hazard Class, deadline, relevant penalties, and a brief explanation of the legal urgency below the "Issue Description" field in Module 2, after the user submits the form.
+Display Alma's response in a clear and visually distinct way (e.g., using a different background color or a speech bubble icon).
+Module 4: Legal Awareness Dashboard
+Description: Provide a visual guide to HPD/DOB violation types and repair timelines.
+UI Elements:
+Embed a PDF viewer for the "LawHelp HPD Violations Checklist.pdf".
+Links to:
+HPD Online: (Find the official HPD website URL and include it)
+DOB Violation Lookup: (Find the official DOB Violation Lookup URL and include it)
+Legal Aid resources: (Find a relevant Legal Aid resource URL for NYC and include it)
+Optional Harassment Reporting Form (link to Module 7).
+Content: Use information from the attached "LawHelp HPD Violations Checklist.pdf" to create a user-friendly visual guide to violation types and timelines.
+Module 5: Harassment & Eviction Reporting
+Description: A simple form to surface abuse trends.
+UI Elements:
+Form with checkbox prompts:
+Threats or intimidation
+Denial of services
+Legal retaliation
+Frivolous court filings
+A text area for additional details.
+Data Storage: Store all data securely in the backend database, associated with the user.
+Module 6: Voice-to-Text Repair Logging
+Description: Allow tenants to speak their complaints to Alma.
+Integration:
+Use Web Speech API or Whisper API for transcription.
+Transcribed input should run through the same AI parsing as text (Module 3).
+UI Elements:
+A microphone icon/button within Module 2.
+A "Review/Edit" UI to allow users to correct any transcription errors before submission.
+Module 7: Organizer Awareness Metadata
+Description: Capture information about whether the tenant knows their building captain or organizer.
+Integration:
+Capture this information during user signup (Module 1).
+Store this data for future engagement strategies.
+Potentially display or hide certain features based on this information (e.g., if they don't know an organizer, suggest resources to find one).
+4. Technical Architecture:
+
+Frontend:
+React (with TypeScript)
+Tailwind CSS
+Web Speech API for voice logging
+jsPDF or equivalent for PDF generation
+Backend:
+Node.js + Express
+PostgreSQL (Supabase or Render)
+Drizzle or Prisma ORM
+AI/LLM Integration:
+OpenRouter API for GPT/LLM calls
+Whisper API (or browser-based STT)
+Hosting:
+Replit for MVP prototyping
+Vercel or Netlify for frontend
+Supabase or Render for backend
+GitHub for versioning
+5. Detailed Module-by-Module Development Tasks for Replit:
+
+Module 1: User Registration
+Create the form input UI with validation.
+Implement secure data storage for user data and metadata (organizer, eviction threat, etc.).
+Module 2: Repair Report Form
+Develop the dynamic, color-coded input form.
+Implement field validation.
+Store the data per user in the database.
+Module 3: PDF Generator
+Transform the repair report data into a downloadable PDF/Docx file.
+Style the PDF/Docx by urgency and room. Mimic the style of the attached "A. Oglivie 720 W 170 #1D Repair Report.pdf" as closely as possible.
+Module 4: AI Violation Categorization (Alma)
+Integrate the OpenRouter API.
+Process the repair issue description using the LLM.
+Display the hazard class, deadline, and penalty information.
+Module 5: Legal Dashboard
+Create static HTML content for the dashboard.
+Embed the PDF viewer for the LawHelp checklist.
+Implement external links to city resources.
+Module 6: Voice Input Logging
+Implement the speech-to-text form.
+Create the review/edit UI.
+Integrate the voice input into the Module 2 pipeline.
+Module 7: Harassment Form
+Create the checkbox form UI.
+Store the data with the user context.
+Module 8: Organizer Metadata
+Capture the organizer metadata at signup.
+Display or hide features depending on the flow.
+6. Error Handling and Debugging:
+
+Implement robust error handling to catch and log any errors.
+Provide informative error messages to the user.
+Use debugging tools to identify and fix any issues.
+7. Examples of Websites with Similar Look and Feel:
+
+https://www.justfix.org/
+https://www.tenant.tech/
+(Find other examples of tenant advocacy or legal aid websites and include them here)
+8. Specific Instructions for AI Integration (Alma):
+
+Persona: Alma should have a friendly, helpful, and informative persona.
+Tone: Use clear and concise language, avoiding legal jargon.
+Error Handling: If Alma cannot determine the violation class, provide a message like, "I'm not sure about the exact violation class, but here are some resources that might help."
+Data Privacy: Ensure that all AI processing is done in a way that protects user privacy.
+9. Success Metrics:
+
+Number of users registered.
+Number of repair reports generated.
+User engagement with the Legal Awareness Dashboard.
+Positive user feedback.
