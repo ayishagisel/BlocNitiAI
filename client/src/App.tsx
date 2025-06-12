@@ -33,20 +33,8 @@ import { queryClient } from "@/lib/queryClient";
 
 function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-2 px-4 py-2">
-          <img 
-            src="./BlocNiti-LogoNB_1749709973044.png" 
-            alt="BlocNiti AI" 
-            style={{ 
-              maxWidth: '120px', 
-              height: 'auto'
-            }} 
-          />
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
+    <Sidebar className="border-r border-gray-200">
+      <SidebarContent className="pt-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
@@ -146,13 +134,30 @@ function AppContent() {
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
+        {/* Fixed Logo Header */}
+        <div className="fixed top-0 left-0 z-50 h-16 bg-white border-b border-gray-200 shadow-sm" style={{ width: '100%' }}>
+          <div className="flex items-center h-full px-4">
+            <img 
+              src="./BlocNiti-LogoNB_1749709973044.png" 
+              alt="BlocNiti AI" 
+              className="h-10 w-auto"
+            />
+          </div>
+        </div>
+        
         <AppSidebar />
-        <SidebarInset className="flex-1">
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarInset className="flex-1" style={{ marginTop: '64px' }}>
+          <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4 bg-gray-50">
             <SidebarTrigger className="-ml-1" />
           </header>
           <div className="flex-1 overflow-auto">
             <Switch>
+              <Route path="/home" component={() => (
+                  <ProtectedRoute>
+                    <TenantDashboard />
+                  </ProtectedRoute>
+                )}
+              />
               <Route path="/dashboard" component={() => (
                   <ProtectedRoute>
                     <TenantDashboard />
@@ -183,7 +188,7 @@ function AppContent() {
                   </ProtectedRoute>
                 )}
               />
-              <Route path="*" component={NotFound} />
+              <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>
         </SidebarInset>
