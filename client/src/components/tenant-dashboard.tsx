@@ -87,24 +87,6 @@ export default function TenantDashboard() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-main">
-        {/* BlocNiti Logo Header */}
-        <div style={{ 
-          padding: '1rem 0 1rem 0',
-          borderBottom: '1px solid var(--border-color)',
-          marginBottom: '1.5rem'
-        }}>
-          <img 
-            src="./BlocNiti-LogoNB_1749709973044.png" 
-            alt="BlocNiti AI - Every Block | Every Voice" 
-            style={{ 
-              maxWidth: '300px', 
-              height: 'auto',
-              filter: 'brightness(1.1)',
-              display: 'block'
-            }} 
-          />
-        </div>
-
         {/* Dashboard Header */}
         <div className="dashboard-header">
           <div>
