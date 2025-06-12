@@ -97,7 +97,7 @@ export default function TenantDashboard() {
           marginBottom: '1.5rem'
         }}>
           <img 
-            src="/blocniti-logo.png" 
+            src="./blocniti-logo.png" 
             alt="BlocNiti AI - Every Block | Every Voice" 
             style={{ 
               maxWidth: '300px', 
