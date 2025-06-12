@@ -32,7 +32,11 @@ function AppNavbar({ onMenuClick }: { onMenuClick: () => void }) {
           className="bp4-button bp4-minimal"
         />
         <NavbarDivider />
-        <NavbarHeading>BlocNiti</NavbarHeading>
+        <img 
+          src="/blocniti-logo.png" 
+          alt="BlocNiti" 
+          style={{ height: '32px', width: 'auto' }}
+        />
       </NavbarGroup>
     </Navbar>
   );
