@@ -30,7 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const result = updateUserProfileSchema.safeParse(req.body);
-      
+
       if (!result.success) {
         const validationError = fromZodError(result.error);
         return res.status(400).json({ 
@@ -63,7 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const result = insertRepairIssueSchema.safeParse(req.body);
-      
+
       if (!result.success) {
         const validationError = fromZodError(result.error);
         return res.status(400).json({ 
@@ -74,12 +74,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Create repair issue
       const repairIssue = await storage.createRepairIssue(userId, result.data);
-      
+
       // Get AI analysis
       try {
         const aiAnalysis = await getAIAnalysis(result.data.issueDescription);
         await storage.updateRepairIssueAIAnalysis(repairIssue.id, aiAnalysis);
-        
+
         // Fetch updated repair issue with AI analysis
         const updatedRepairIssue = await storage.getRepairIssue(repairIssue.id);
         res.json(updatedRepairIssue);
@@ -98,7 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const repairIssueId = parseInt(req.params.id);
-      
+
       await storage.deleteRepairIssue(repairIssueId, userId);
       res.json({ message: "Repair issue deleted successfully" });
     } catch (error) {
@@ -123,7 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const result = insertHarassmentReportSchema.safeParse(req.body);
-      
+
       if (!result.success) {
         const validationError = fromZodError(result.error);
         return res.status(400).json({ 
@@ -144,7 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/transcribe', isAuthenticated, async (req: any, res) => {
     try {
       const { audioData } = req.body;
-      
+
       if (!audioData) {
         return res.status(400).json({ message: "Audio data is required" });
       }
@@ -161,6 +161,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Auth routes
+  app.get('/api/login', (req, res) => {
+    try {
+      const authUrl = auth.getAuthUrl();
+      console.log('Redirecting to auth URL:', authUrl);
+      res.redirect(authUrl);
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Failed to initiate login' });
+    }
+  });
+
+  app.get('/api/callback', async (req, res) => {
+    try {
+      const token = req.query.token as string;
+      const code = req.query.code as string;
+
+      console.log('Callback received - token:', !!token, 'code:', !!code);
+
+      if (token) {
+        const userInfo = await auth.authenticateWithToken(token);
+        req.session.userId = userInfo.id;
+        req.session.userInfo = userInfo;
+        console.log('User authenticated:', userInfo.id);
+        res.redirect('/dashboard');
+      } else if (code) {
+        // Handle OAuth code flow
+        const userInfo = await auth.authenticate(req, res);
+        if (userInfo) {
+          req.session.userId = userInfo.id;
+          req.session.userInfo = userInfo;
+          console.log('User authenticated via code:', userInfo.id);
+          res.redirect('/dashboard');
+        } else {
+          throw new Error('Authentication failed');
+        }
+      } else {
+        console.error('No token or code provided');
+        res.redirect('/?error=no_auth_data');
+      }
+    } catch (error) {
+      console.error('Auth callback error:', error);
+      res.redirect('/?error=auth_failed');
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
@@ -168,7 +214,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 // AI Analysis using OpenRouter API
 async function getAIAnalysis(issueDescription: string) {
   const apiKey = process.env.OPENROUTER_API_KEY || process.env.API_KEY || "default_key";
-  
+
   const prompt = `
 You are Alma, an AI assistant specializing in NYC housing law and HPD violations. 
 Analyze the following repair issue and provide:
@@ -221,7 +267,7 @@ Guidelines:
 
     const data = await response.json();
     const aiResponse = data.choices[0]?.message?.content;
-    
+
     if (!aiResponse) {
       throw new Error('No response from AI');
     }
