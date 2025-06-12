@@ -38,7 +38,6 @@ export default function Home() {
         return <HarassmentReporting />;
       default:
         return <TenantDashboard />;
-          );
     }
   };
 
