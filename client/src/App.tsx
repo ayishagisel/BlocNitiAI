@@ -98,14 +98,16 @@ function Router() {
       
       <div style={{ paddingTop: '50px', minHeight: '100vh' }}>
         <Switch>
-          {isLoading || !isAuthenticated ? (
-            <Route path="/" component={Landing} />
+          {isLoading ? (
+            <Route path="*" component={() => <div>Loading...</div>} />
+          ) : !isAuthenticated ? (
+            <Route path="*" component={Landing} />
           ) : (
             <>
               <Route path="/" component={Home} />
+              <Route component={NotFound} />
             </>
           )}
-          <Route component={NotFound} />
         </Switch>
       </div>
     </div>
