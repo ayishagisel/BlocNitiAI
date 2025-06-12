@@ -114,18 +114,29 @@ function AppContent() {
 
   // Check if current route should show sidebar
   const [location] = useLocation();
-  const publicRoutes = ['/', '/register', '/home'];
+  const publicRoutes = ['/', '/register'];
   const isPublicRoute = publicRoutes.includes(location);
 
-  // Show public pages without sidebar for non-authenticated users or public routes
-  if (!user || isPublicRoute) {
+  // Show public pages without sidebar for non-authenticated users
+  if (!user && isPublicRoute) {
     return (
       <div className="h-screen w-full">
         <Switch>
           <Route path="/" component={LandingPage} />
-          <Route path="/home" component={Home} />
           <Route path="/register" component={UserRegistration} />
           <Route path="*" component={NotFound} />
+        </Switch>
+      </div>
+    );
+  }
+
+  // Redirect unauthenticated users to landing page
+  if (!user) {
+    return (
+      <div className="h-screen w-full">
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="*" component={LandingPage} />
         </Switch>
       </div>
     );
