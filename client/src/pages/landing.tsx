@@ -15,30 +15,30 @@ export default function Landing() {
   };
 
   return (
-    <div className={Classes.DARK} style={{ 
+    <div style={{ 
       minHeight: '100vh', 
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #0f1419 0%, #1c2127 50%, #242424 100%)'
+      background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)'
     }}>
       <Card elevation={Elevation.FOUR} style={{ 
         maxWidth: '600px', 
         padding: '40px',
         textAlign: 'center'
       }}>
-        <H1 style={{ color: '#48AFF0', marginBottom: '20px' }}>
+        <H1 style={{ color: '#215db0', marginBottom: '20px' }}>
           Welcome to BlocNiti
         </H1>
 
-        <H3 style={{ marginBottom: '30px', color: '#F5F8FA' }}>
+        <H3 style={{ marginBottom: '30px', color: '#2c3e50' }}>
           Political Bloc for Ethical Housing
         </H3>
 
         <Text className={Classes.TEXT_LARGE} style={{ 
           marginBottom: '30px', 
           lineHeight: '1.6',
-          color: '#CED9E0'
+          color: '#495057'
         }}>
           BlocNiti is dedicated to ensuring proper ethics and moral principles in housing. 
           Our platform provides tools for documentation, reporting, and accountability to 
@@ -46,7 +46,7 @@ export default function Landing() {
         </Text>
 
         <div style={{ marginBottom: '30px' }}>
-          <Text style={{ color: '#8A9BA8' }}>
+          <Text style={{ color: '#6c757d' }}>
             • Document repair issues with photo evidence<br/>
             • Voice recording for testimonies<br/>
             • Legal compliance tracking<br/>
@@ -64,7 +64,7 @@ export default function Landing() {
         />
 
         <div style={{ marginTop: '20px' }}>
-          <Text className={Classes.TEXT_SMALL} style={{ color: '#8A9BA8' }}>
+          <Text className={Classes.TEXT_SMALL} style={{ color: '#6c757d' }}>
             Building ethical communities through transparency and accountability
           </Text>
         </div>

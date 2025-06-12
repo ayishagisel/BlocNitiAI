@@ -139,7 +139,7 @@ export default function Home() {
   };
 
   return (
-    <div className={Classes.DARK} style={{ minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh' }}>
       {renderContent()}
     </div>
   );
