@@ -89,10 +89,7 @@ export default function TenantDashboard() {
       <div className="dashboard-main">
         {/* BlocNiti Logo Header */}
         <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          padding: '2rem 0 1rem 0',
+          padding: '1rem 0 1rem 0',
           borderBottom: '1px solid var(--border-color)',
           marginBottom: '1.5rem'
         }}>
@@ -102,7 +99,8 @@ export default function TenantDashboard() {
             style={{ 
               maxWidth: '300px', 
               height: 'auto',
-              filter: 'brightness(1.1)'
+              filter: 'brightness(1.1)',
+              display: 'block'
             }} 
           />
         </div>
