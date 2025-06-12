@@ -216,10 +216,16 @@ body {
 
 /* Blueprint overrides */
 .bp4-navbar {
-  background: var(--space-cadet) !important;
+  background: #2C2557 !important;
+  background-color: #2C2557 !important;
   box-shadow: 0 2px 8px rgba(44, 37, 87, 0.15) !important;
   height: 100px !important;
   min-height: 100px !important;
+}
+
+.bp4-navbar.bp4-navbar {
+  background: #2C2557 !important;
+  background-color: #2C2557 !important;
 }
 
 .bp4-navbar .bp4-navbar-heading {
