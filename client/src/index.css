@@ -1,115 +1,99 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "@blueprintjs/core/lib/css/blueprint.css";
+@import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(20, 14.3%, 4.1%);
-  --muted: hsl(60, 4.8%, 95.9%);
-  --muted-foreground: hsl(25, 5.3%, 44.7%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 14.3%, 4.1%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 14.3%, 4.1%);
-  --border: hsl(20, 5.9%, 90%);
-  --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(221, 83%, 53%);
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(159, 75%, 40%);
-  --secondary-foreground: hsl(160, 84%, 10%);
-  --accent: hsl(60, 4.8%, 95.9%);
-  --accent-foreground: hsl(24, 9.8%, 10%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(20, 14.3%, 4.1%);
-  --radius: 0.5rem;
-  
-  /* Custom colors for BlocNiti */
-  --urgent: hsl(0, 74%, 42%);
-  --priority: hsl(25, 85%, 53%);
-  --non-urgent: hsl(215, 13%, 42%);
-  --alma-bg: hsl(221, 83%, 97%);
-  --success: hsl(159, 75%, 40%);
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark light;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
-.dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(221, 83%, 53%);
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(159, 75%, 40%);
-  --secondary-foreground: hsl(160, 84%, 90%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
-  --radius: 0.5rem;
-  
-  /* Dark mode custom colors */
-  --urgent: hsl(0, 84%, 60%);
-  --priority: hsl(25, 95%, 63%);
-  --non-urgent: hsl(215, 23%, 52%);
-  --alma-bg: hsl(240, 10%, 8%);
-  --success: hsl(159, 75%, 50%);
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #242424;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
-  }
+#root {
+  width: 100%;
+  min-height: 100vh;
 }
 
-@layer components {
-  .tab-btn {
-    @apply px-4 py-2 rounded-lg font-medium text-gray-600 hover:text-primary hover:bg-primary/10 transition-all duration-200;
-  }
-  
-  .tab-btn.active {
-    @apply bg-primary text-white shadow-sm;
-  }
-  
-  .status-urgent {
-    @apply bg-red-600 text-white;
-    background-color: hsl(var(--urgent));
-  }
-  
-  .status-priority {
-    @apply text-white;
-    background-color: hsl(var(--priority));
-  }
-  
-  .status-non-urgent {
-    @apply text-white;
-    background-color: hsl(var(--non-urgent));
-  }
-  
-  .border-status-urgent {
-    border-left-color: hsl(var(--urgent));
-  }
-  
-  .border-status-priority {
-    border-left-color: hsl(var(--priority));
-  }
-  
-  .border-status-non-urgent {
-    border-left-color: hsl(var(--non-urgent));
-  }
-  
-  .alma-bg {
-    background-color: hsl(var(--alma-bg));
-  }
+/* Blueprint.js dark theme customizations for BlocNiti */
+.bp4-dark {
+  background-color: #1c2127;
+}
+
+.bp4-navbar.bp4-dark {
+  background-color: #0f1419;
+  box-shadow: 0 1px 0 rgba(16, 22, 26, 0.4);
+}
+
+.bp4-drawer.bp4-dark .bp4-drawer-header {
+  background-color: #0f1419;
+}
+
+.bp4-menu.bp4-dark .bp4-menu-item:hover {
+  background-color: #394b59;
+  color: #f5f8fa;
+}
+
+.bp4-menu.bp4-dark .bp4-menu-item.bp4-active {
+  background-color: #215db0;
+  color: #ffffff;
+}
+
+/* Custom styling for BlocNiti brand */
+.blocniti-header {
+  background: linear-gradient(135deg, #0f1419 0%, #1c2127 100%);
+  border-bottom: 2px solid #215db0;
+}
+
+.blocniti-sidebar {
+  background-color: #1c2127;
+  border-right: 1px solid #394b59;
+}
+
+.blocniti-content {
+  background-color: #242424;
+  padding: 20px;
+}
+
+.blocniti-card {
+  background-color: #1c2127 !important;
+  border: 1px solid #394b59;
+  transition: all 0.3s ease;
+}
+
+.blocniti-card:hover {
+  border-color: #48AFF0;
+  box-shadow: 0 0 0 1px #48AFF0, 0 2px 4px rgba(72, 175, 240, 0.2);
+}
+
+/* Blueprint button customizations for BlocNiti */
+.bp4-button.bp4-intent-primary {
+  background-color: #215db0;
+  background-image: linear-gradient(to bottom, #215db0, #1c4f99);
+}
+
+.bp4-button.bp4-intent-primary:hover {
+  background-color: #48AFF0;
+  background-image: linear-gradient(to bottom, #48AFF0, #215db0);
+}
+
+/* Blueprint navbar customizations */
+.bp4-navbar .bp4-navbar-heading {
+  color: #48AFF0;
+  font-weight: 600;
+  font-size: 18px;
 }

@@ -11,6 +11,9 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@blueprintjs/core": "^5.19.0",
+    "@blueprintjs/icons": "^5.22.0",
+    "@blueprintjs/select": "^5.3.20",
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@neondatabase/serverless": "^0.10.4",
