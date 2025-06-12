@@ -115,10 +115,10 @@ function AppContent() {
   // Check if current route should show sidebar
   const [location] = useLocation();
   const publicRoutes = ['/', '/register', '/home'];
-  const shouldShowSidebar = user && !publicRoutes.includes(location);
+  const isPublicRoute = publicRoutes.includes(location);
 
-  // Public pages without sidebar
-  if (!shouldShowSidebar) {
+  // Show public pages without sidebar for non-authenticated users or public routes
+  if (!user || isPublicRoute) {
     return (
       <div className="h-screen w-full">
         <Switch>
