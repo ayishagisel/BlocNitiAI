@@ -112,6 +112,21 @@ function AppContent() {
     return <div>Loading...</div>;
   }
 
+  // Show pages without sidebar for unauthenticated users
+  if (!user) {
+    return (
+      <div className="h-screen w-full">
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="/home" component={Home} />
+          <Route path="/register" component={UserRegistration} />
+          <Route path="*" component={NotFound} />
+        </Switch>
+      </div>
+    );
+  }
+
+  // Show pages with sidebar for authenticated users
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
