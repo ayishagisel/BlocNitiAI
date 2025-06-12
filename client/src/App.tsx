@@ -134,23 +134,23 @@ function AppContent() {
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
-        {/* Fixed Logo Header */}
-        <div className="fixed top-0 left-0 z-50 h-16 bg-white border-b border-gray-200 shadow-sm" style={{ width: '100%' }}>
-          <div className="flex items-center h-full px-4">
-            <img 
-              src="./BlocNiti-LogoNB_1749709973044.png" 
-              alt="BlocNiti AI" 
-              className="h-10 w-auto"
-            />
+        {/* Fixed Header with Logo and Toggle */}
+        <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between h-full px-4">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="h-8 w-8" />
+              <img 
+                src="./BlocNiti-LogoNB_1749709973044.png" 
+                alt="BlocNiti AI" 
+                className="h-12 w-auto"
+              />
+            </div>
           </div>
         </div>
         
         <AppSidebar />
-        <SidebarInset className="flex-1" style={{ marginTop: '64px' }}>
-          <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4 bg-gray-50">
-            <SidebarTrigger className="-ml-1" />
-          </header>
-          <div className="flex-1 overflow-auto">
+        <SidebarInset className="flex-1 mt-16">
+          <div className="flex-1 overflow-auto p-6">
             <Switch>
               <Route path="/home" component={() => (
                   <ProtectedRoute>
