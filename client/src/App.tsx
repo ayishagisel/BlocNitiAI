@@ -23,7 +23,7 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 
 function AppNavbar({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <Navbar className={Classes.DARK}>
+    <Navbar>
       <NavbarGroup>
         <Button 
           icon="menu" 
@@ -45,7 +45,6 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       isOpen={isOpen}
       onClose={onClose}
       title="Navigation"
-      className={Classes.DARK}
       size="240px"
     >
       <div className={Classes.DRAWER_BODY}>
@@ -93,7 +92,7 @@ function Router() {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="bp4-dark">
+    <div>
       <AppNavbar onMenuClick={toggleSidebar} />
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
       
