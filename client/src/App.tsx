@@ -35,7 +35,7 @@ function AppNavbar({ onMenuClick }: { onMenuClick: () => void }) {
         <img 
           src="/blocniti-logo.png" 
           alt="BlocNiti AI" 
-          style={{ height: '32px', width: 'auto' }}
+          style={{ height: '48px', width: 'auto' }}
         />
       </NavbarGroup>
     </Navbar>
