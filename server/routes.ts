@@ -161,51 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auth routes
-  app.get('/api/login', (req, res) => {
-    try {
-      const authUrl = auth.getAuthUrl();
-      console.log('Redirecting to auth URL:', authUrl);
-      res.redirect(authUrl);
-    } catch (error) {
-      console.error('Login error:', error);
-      res.status(500).json({ error: 'Failed to initiate login' });
-    }
-  });
-
-  app.get('/api/callback', async (req, res) => {
-    try {
-      const token = req.query.token as string;
-      const code = req.query.code as string;
-
-      console.log('Callback received - token:', !!token, 'code:', !!code);
-
-      if (token) {
-        const userInfo = await auth.authenticateWithToken(token);
-        req.session.userId = userInfo.id;
-        req.session.userInfo = userInfo;
-        console.log('User authenticated:', userInfo.id);
-        res.redirect('/dashboard');
-      } else if (code) {
-        // Handle OAuth code flow
-        const userInfo = await auth.authenticate(req, res);
-        if (userInfo) {
-          req.session.userId = userInfo.id;
-          req.session.userInfo = userInfo;
-          console.log('User authenticated via code:', userInfo.id);
-          res.redirect('/dashboard');
-        } else {
-          throw new Error('Authentication failed');
-        }
-      } else {
-        console.error('No token or code provided');
-        res.redirect('/?error=no_auth_data');
-      }
-    } catch (error) {
-      console.error('Auth callback error:', error);
-      res.redirect('/?error=auth_failed');
-    }
-  });
+  
 
   const httpServer = createServer(app);
   return httpServer;
