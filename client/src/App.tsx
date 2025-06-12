@@ -112,8 +112,13 @@ function AppContent() {
     return <div>Loading...</div>;
   }
 
-  // Show pages without sidebar for unauthenticated users
-  if (!user) {
+  // Check if current route should show sidebar
+  const [location] = useLocation();
+  const publicRoutes = ['/', '/register', '/home'];
+  const shouldShowSidebar = user && !publicRoutes.includes(location);
+
+  // Public pages without sidebar
+  if (!shouldShowSidebar) {
     return (
       <div className="h-screen w-full">
         <Switch>
@@ -126,7 +131,7 @@ function AppContent() {
     );
   }
 
-  // Show pages with sidebar for authenticated users
+  // Protected pages with sidebar for authenticated users
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
@@ -137,9 +142,6 @@ function AppContent() {
           </header>
           <div className="flex-1 overflow-auto">
             <Switch>
-              <Route path="/" component={LandingPage} />
-              <Route path="/home" component={Home} />
-              <Route path="/register" component={UserRegistration} />
               <Route path="/dashboard" component={() => (
                   <ProtectedRoute>
                     <TenantDashboard />
