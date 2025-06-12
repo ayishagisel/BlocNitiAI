@@ -91,6 +91,14 @@ function Router() {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Landing />;
+  }
+
   return (
     <div>
       <AppNavbar onMenuClick={toggleSidebar} />
@@ -98,16 +106,8 @@ function Router() {
       
       <div style={{ paddingTop: '50px', minHeight: '100vh' }}>
         <Switch>
-          {isLoading ? (
-            <Route path="*" component={() => <div>Loading...</div>} />
-          ) : !isAuthenticated ? (
-            <Route path="*" component={Landing} />
-          ) : (
-            <>
-              <Route path="/" component={Home} />
-              <Route component={NotFound} />
-            </>
-          )}
+          <Route path="/" component={Home} />
+          <Route component={NotFound} />
         </Switch>
       </div>
     </div>
