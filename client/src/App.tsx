@@ -79,15 +79,15 @@ function AppSidebar() {
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-    const [, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   if (!user) {
-      setLocation("/register");
-    return <></>;
+    setLocation("/");
+    return null;
   }
 
   return <>{children}</>;
@@ -95,35 +95,27 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [location] = useLocation();
 
+  // Show loading state while auth is being determined
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
   }
 
-  // Check if current route should show sidebar
-  const [location] = useLocation();
   const publicRoutes = ['/', '/register'];
   const isPublicRoute = publicRoutes.includes(location);
 
-  // Show public pages without sidebar for non-authenticated users
-  if (!user && isPublicRoute) {
+  // Show public pages without sidebar for non-authenticated users or public routes
+  if (!user || isPublicRoute) {
     return (
       <div className="h-screen w-full">
         <Switch>
           <Route path="/" component={LandingPage} />
           <Route path="/register" component={UserRegistration} />
-          <Route path="*" component={NotFound} />
-        </Switch>
-      </div>
-    );
-  }
-
-  // Redirect unauthenticated users to landing page
-  if (!user) {
-    return (
-      <div className="h-screen w-full">
-        <Switch>
-          <Route path="/" component={LandingPage} />
           <Route path="*" component={LandingPage} />
         </Switch>
       </div>
