@@ -1,4 +1,3 @@
-
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -108,7 +107,7 @@ function Router() {
     <div>
       <AppNavbar onMenuClick={toggleSidebar} />
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-      
+
       <div style={{ paddingTop: '100px', minHeight: '100vh' }}>
         <Switch>
           <Route path="/" component={Home} />
