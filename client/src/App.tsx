@@ -1,6 +1,5 @@
-
+import { Route, Switch, useLocation } from "wouter";
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Classes, Drawer, Menu, MenuItem } from '@blueprintjs/core';
 import '@blueprintjs/core/lib/css/blueprint.css';
@@ -29,8 +28,8 @@ import {
   SidebarTrigger,
   SidebarInset 
 } from './components/ui/sidebar';
-
-const queryClient = new QueryClient();
+import { Toaster } from "@/components/ui/toaster";
+import { queryClient } from "@/lib/queryClient";
 
 function AppSidebar() {
   return (
@@ -51,7 +50,7 @@ function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="/">
+              <a href="/home">
                 <span>Dashboard</span>
               </a>
             </SidebarMenuButton>
@@ -92,13 +91,15 @@ function AppSidebar() {
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+    const [, setLocation] = useLocation();
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   if (!user) {
-    return <Navigate to="/register" replace />;
+      setLocation("/register");
+    return <></>;
   }
 
   return <>{children}</>;
@@ -120,52 +121,42 @@ function AppContent() {
             <SidebarTrigger className="-ml-1" />
           </header>
           <div className="flex-1 overflow-auto">
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/register" element={<UserRegistration />} />
-              <Route
-                path="/dashboard"
-                element={
+            <Switch>
+              <Route path="/" component={LandingPage} />
+              <Route path="/home" component={Home} />
+              <Route path="/register" component={UserRegistration} />
+              <Route path="/dashboard" component={() => (
                   <ProtectedRoute>
                     <TenantDashboard />
                   </ProtectedRoute>
-                }
+                )}
               />
-              <Route
-                path="/repair-reports"
-                element={
+              <Route path="/repair-reports" component={() => (
                   <ProtectedRoute>
                     <RepairReports />
                   </ProtectedRoute>
-                }
+                )}
               />
-              <Route
-                path="/legal-dashboard"
-                element={
+              <Route path="/legal-dashboard" component={() => (
                   <ProtectedRoute>
                     <LegalDashboard />
                   </ProtectedRoute>
-                }
+                )}
               />
-              <Route
-                path="/harassment-reports"
-                element={
+              <Route path="/harassment-reports" component={() => (
                   <ProtectedRoute>
                     <HarassmentReporting />
                   </ProtectedRoute>
-                }
+                )}
               />
-              <Route
-                path="/stakeholder"
-                element={
+              <Route path="/stakeholder" component={() => (
                   <ProtectedRoute>
                     <StakeholderDashboard />
                   </ProtectedRoute>
-                }
+                )}
               />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+              <Route path="*" component={NotFound} />
+            </Switch>
           </div>
         </SidebarInset>
       </div>
@@ -176,9 +167,8 @@ function AppContent() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <AppContent />
-      </Router>
+      <AppContent />
+      <Toaster />
     </QueryClientProvider>
   );
 }
