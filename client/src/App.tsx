@@ -50,6 +50,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       onClose={onClose}
       title="Navigation"
       size="240px"
+      position="left"
     >
       <div className={Classes.DRAWER_BODY}>
         <Menu className={Classes.ELEVATION_1}>
