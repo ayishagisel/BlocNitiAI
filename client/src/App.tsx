@@ -35,7 +35,7 @@ function AppNavbar({ onMenuClick }: { onMenuClick: () => void }) {
         <img 
           src="/blocniti-logo.png" 
           alt="BlocNiti AI" 
-          style={{ height: '48px', width: 'auto' }}
+          style={{ height: '44px', width: 'auto', marginLeft: '8px' }}
         />
       </NavbarGroup>
     </Navbar>
@@ -108,7 +108,7 @@ function Router() {
       <AppNavbar onMenuClick={toggleSidebar} />
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
       
-      <div style={{ paddingTop: '50px', minHeight: '100vh' }}>
+      <div style={{ paddingTop: '60px', minHeight: '100vh' }}>
         <Switch>
           <Route path="/" component={Home} />
           <Route component={NotFound} />
