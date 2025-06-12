@@ -110,8 +110,7 @@ export default function TenantDashboard() {
         {/* Dashboard Header */}
         <div className="dashboard-header">
           <div>
-            <h1 className="dashboard-title">BlocNiti Dashboard</h1></div>
-        </div>
+            <h1 className="dashboard-title">BlocNiti Dashboard</h1>
             <p className="dashboard-subtitle">{currentLevel?.description}</p>
           </div>
           <div>
