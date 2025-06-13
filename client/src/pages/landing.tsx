@@ -35,7 +35,7 @@ export default function Landing() {
       >
         <div style={{ marginBottom: "30px" }}>
           <img 
-            src="/blocniti-logo.png" 
+            src="./BlocNiti-LogoNB_1749709973044.png" 
             alt="BlocNiti AI Logo" 
             style={{ 
               width: "240px", 
@@ -45,6 +45,10 @@ export default function Landing() {
               marginLeft: "auto",
               marginRight: "auto"
             }} 
+            onError={(e) => {
+              console.error('Logo failed to load');
+              e.currentTarget.style.display = 'none';
+            }}
           />
           <H1 style={{ color: "#215db0", marginBottom: "20px" }}>
             Welcome to BlocNiti AI
