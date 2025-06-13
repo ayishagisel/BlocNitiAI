@@ -33,9 +33,23 @@ export default function Landing() {
           textAlign: "center",
         }}
       >
-        <H1 style={{ color: "#215db0", marginBottom: "20px" }}>
-          Welcome to BlocNiti AI
-        </H1>
+        <div style={{ marginBottom: "30px" }}>
+          <img 
+            src="/blocniti-logo.png" 
+            alt="BlocNiti AI Logo" 
+            style={{ 
+              width: "240px", 
+              height: "auto", 
+              marginBottom: "20px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto"
+            }} 
+          />
+          <H1 style={{ color: "#215db0", marginBottom: "20px" }}>
+            Welcome to BlocNiti AI
+          </H1>
+        </div>
 
         <H3 style={{ marginBottom: "30px", color: "#2c3e50" }}>
           Political Bloc for Ethical Housing
