@@ -31,15 +31,28 @@ const tenantRegistrationSchema = z.object({
   streetname: z.string().min(1, "Street name is required"),
   unit: z.string().min(1, "Unit number is required"),
   zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
+  housingType: z.enum(["rent_stabilized", "rent_controlled", "nycha", "private"]),
   knowsOrganizer: z.boolean(),
+  organizerName: z.string().optional(),
+  organizerPhone: z.string().optional(),
+  organizerEmail: z.string().optional(),
+  organizerCompany: z.string().optional(),
   threatened: z.boolean(),
   evictionCase: z.boolean(),
-  hasTenantLeader: z.boolean(),
+  hasHpProceeding: z.boolean(),
   registeredWithNonProfit: z.boolean(),
+  nonProfitName: z.string().optional(),
+  nonProfitPhone: z.string().optional(),
+  nonProfitEmail: z.string().optional(),
   receivedCitySupport: z.boolean(),
+  cityAgencyName: z.string().optional(),
+  cityAgencyPhone: z.string().optional(),
+  cityAgencyEmail: z.string().optional(),
   receivedElectedSupport: z.boolean(),
+  electedOfficialName: z.string().optional(),
+  electedOfficialPhone: z.string().optional(),
+  electedOfficialEmail: z.string().optional(),
   atRiskHomelessness: z.boolean(),
-  housingType: z.enum(["rent_stabilized", "rent_controlled", "nycha", "private"]),
 });
 
 type TenantRegistrationData = z.infer<typeof tenantRegistrationSchema>;
@@ -59,15 +72,28 @@ export default function TenantRegistration() {
       streetname: "",
       unit: "",
       zip: "",
+      housingType: "private",
       knowsOrganizer: false,
+      organizerName: "",
+      organizerPhone: "",
+      organizerEmail: "",
+      organizerCompany: "",
       threatened: false,
       evictionCase: false,
-      hasTenantLeader: false,
+      hasHpProceeding: false,
       registeredWithNonProfit: false,
+      nonProfitName: "",
+      nonProfitPhone: "",
+      nonProfitEmail: "",
       receivedCitySupport: false,
+      cityAgencyName: "",
+      cityAgencyPhone: "",
+      cityAgencyEmail: "",
       receivedElectedSupport: false,
+      electedOfficialName: "",
+      electedOfficialPhone: "",
+      electedOfficialEmail: "",
       atRiskHomelessness: false,
-      housingType: "private",
     },
   });
 
@@ -284,6 +310,44 @@ export default function TenantRegistration() {
                   />
                 </div>
               </div>
+
+              {/* Housing Type moved here - right after address */}
+              <FormField
+                control={form.control}
+                name="housingType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700 mb-3">
+                      What is your housing type? *
+                    </FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        className="flex flex-col space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="rent_stabilized" id="rent-stabilized" />
+                          <Label htmlFor="rent-stabilized">Rent Stabilized</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="rent_controlled" id="rent-controlled" />
+                          <Label htmlFor="rent-controlled">Rent Controlled</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="nycha" id="nycha" />
+                          <Label htmlFor="nycha">NYCHA (Public Housing)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="private" id="private" />
+                          <Label htmlFor="private">Private Housing</Label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             {/* Legal Context Questions */}
@@ -318,6 +382,67 @@ export default function TenantRegistration() {
                   </FormItem>
                 )}
               />
+
+              {/* Conditional fields for organizer contact info */}
+              {form.watch("knowsOrganizer") && (
+                <div className="ml-6 space-y-4 border-l-2 border-blue-200 pl-4">
+                  <h5 className="text-sm font-medium text-gray-700">Organizer Contact Information</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="organizerName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Organizer name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="organizerCompany"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company/Organization</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Organization name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="organizerPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="(555) 123-4567" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="organizerEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="organizer@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
 
               <FormField
                 control={form.control}
@@ -379,11 +504,11 @@ export default function TenantRegistration() {
 
               <FormField
                 control={form.control}
-                name="hasTenantLeader"
+                name="hasHpProceeding"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium text-gray-700 mb-3">
-                      Does your building have a tenant leader, building captain or organizer?
+                      Do you have an active HP Proceeding in Housing Court to get your landlord to do repairs?
                     </FormLabel>
                     <FormControl>
                       <RadioGroup
@@ -392,12 +517,12 @@ export default function TenantRegistration() {
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="leader-yes" />
-                          <Label htmlFor="leader-yes">Yes</Label>
+                          <RadioGroupItem value="true" id="hp-proceeding-yes" />
+                          <Label htmlFor="hp-proceeding-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="leader-no" />
-                          <Label htmlFor="leader-no">No</Label>
+                          <RadioGroupItem value="false" id="hp-proceeding-no" />
+                          <Label htmlFor="hp-proceeding-no">No</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -435,6 +560,54 @@ export default function TenantRegistration() {
                 )}
               />
 
+              {/* Conditional fields for non-profit contact info */}
+              {form.watch("registeredWithNonProfit") && (
+                <div className="ml-6 space-y-4 border-l-2 border-green-200 pl-4">
+                  <h5 className="text-sm font-medium text-gray-700">Non-Profit Contact Information</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="nonProfitName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Organization Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Legal Aid Society" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="nonProfitPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="(555) 123-4567" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="nonProfitEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="contact@nonprofit.org" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
+
               <FormField
                 control={form.control}
                 name="receivedCitySupport"
@@ -450,12 +623,12 @@ export default function TenantRegistration() {
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="city-yes" />
-                          <Label htmlFor="city-yes">Yes</Label>
+                          <RadioGroupItem value="true" id="city-support-yes" />
+                          <Label htmlFor="city-support-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="city-no" />
-                          <Label htmlFor="city-no">No</Label>
+                          <RadioGroupItem value="false" id="city-support-no" />
+                          <Label htmlFor="city-support-no">No</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -463,6 +636,54 @@ export default function TenantRegistration() {
                   </FormItem>
                 )}
               />
+
+              {/* Conditional fields for city agency contact info */}
+              {form.watch("receivedCitySupport") && (
+                <div className="ml-6 space-y-4 border-l-2 border-orange-200 pl-4">
+                  <h5 className="text-sm font-medium text-gray-700">City Agency Contact Information</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="cityAgencyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Agency Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="HPD, NYCHA, etc." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="cityAgencyPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="(555) 123-4567" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="cityAgencyEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="contact@agency.nyc.gov" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
 
               <FormField
                 control={form.control}
@@ -479,12 +700,12 @@ export default function TenantRegistration() {
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="elected-yes" />
-                          <Label htmlFor="elected-yes">Yes</Label>
+                          <RadioGroupItem value="true" id="elected-support-yes" />
+                          <Label htmlFor="elected-support-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="elected-no" />
-                          <Label htmlFor="elected-no">No</Label>
+                          <RadioGroupItem value="false" id="elected-support-no" />
+                          <Label htmlFor="elected-support-no">No</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -492,6 +713,54 @@ export default function TenantRegistration() {
                   </FormItem>
                 )}
               />
+
+              {/* Conditional fields for elected official contact info */}
+              {form.watch("receivedElectedSupport") && (
+                <div className="ml-6 space-y-4 border-l-2 border-red-200 pl-4">
+                  <h5 className="text-sm font-medium text-gray-700">Elected Official Contact Information</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="electedOfficialName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Official Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Council Member, Senator, etc." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="electedOfficialPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="(555) 123-4567" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="electedOfficialEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="office@official.gov" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
 
               <FormField
                 control={form.control}
@@ -508,49 +777,12 @@ export default function TenantRegistration() {
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="homeless-yes" />
-                          <Label htmlFor="homeless-yes">Yes</Label>
+                          <RadioGroupItem value="true" id="homelessness-yes" />
+                          <Label htmlFor="homelessness-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="homeless-no" />
-                          <Label htmlFor="homeless-no">No</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="housingType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 mb-3">
-                      What is your housing type?
-                    </FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        className="flex flex-col space-y-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="rent_stabilized" id="rent-stabilized" />
-                          <Label htmlFor="rent-stabilized">Rent Stabilized</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="rent_controlled" id="rent-controlled" />
-                          <Label htmlFor="rent-controlled">Rent Controlled</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="nycha" id="nycha" />
-                          <Label htmlFor="nycha">NYCHA (Public Housing)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="private" id="private" />
-                          <Label htmlFor="private">Private Housing</Label>
+                          <RadioGroupItem value="false" id="homelessness-no" />
+                          <Label htmlFor="homelessness-no">No</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
