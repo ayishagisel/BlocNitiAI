@@ -6,7 +6,8 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import './index.css';
 
-import { useAuth } from './hooks/useAuth';
+import { useAuth } from "@/hooks/useAuth";
+import { useProfileCompleteness } from "@/hooks/useProfileCompleteness";
 import UserRegistration from './components/user-registration';
 import TenantDashboard from './components/tenant-dashboard';
 import RepairReports from './components/repair-reports';
@@ -90,16 +91,23 @@ function AppSidebar() {
 }
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-  const [, setLocation] = useLocation();
+  const { user, isLoading } = useAuth();
+  const [location, setLocation] = useLocation();
+  const { isComplete } = useProfileCompleteness(user);
 
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   if (!user) {
-    setLocation("/");
-    return null;
+    return <>{children}</>;
+  }
+
+  // If user is authenticated but profile is incomplete, redirect to profile page
+  // unless they're already on the profile page
+  if (user && !isComplete && location !== '/profile') {
+    setLocation('/profile');
+    return <div>Redirecting to complete profile...</div>;
   }
 
   return <>{children}</>;
@@ -205,6 +213,11 @@ function AppContent() {
     );
   }
 
+  // Placeholder for ProfileIncompleteBanner (implementation not provided)
+  const ProfileIncompleteBanner = () => {
+    return null;
+  };
+
   // Protected pages with sidebar for authenticated users
   return (
     <SidebarProvider>
@@ -227,6 +240,7 @@ function AppContent() {
         <AppSidebar />
         <SidebarInset className="flex-1 mt-16">
           <div className="flex-1 overflow-auto p-6">
+            <ProfileIncompleteBanner />
             <Switch>
               <Route path="/home" component={() => (
                   <ProtectedRoute>
