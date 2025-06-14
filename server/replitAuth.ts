@@ -179,10 +179,29 @@ export async function setupAuth(app: Express) {
 
   app.get('/api/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
-    (req: Request, res: Response) => {
-      const redirectPath = (req.session as any)?.authRedirect || '/dashboard';
-      delete (req.session as any).authRedirect;
-      res.redirect(redirectPath);
+    async (req: Request, res: Response) => {
+      try {
+        const user = req.user as any;
+        const redirectPath = (req.session as any)?.authRedirect;
+        delete (req.session as any).authRedirect;
+        
+        if (redirectPath) {
+          return res.redirect(redirectPath);
+        }
+        
+        // Determine appropriate dashboard based on user type
+        const { storage } = await import('./storage');
+        const stakeholderData = await storage.getStakeholderByUserId(user.id);
+        
+        if (stakeholderData) {
+          return res.redirect('/stakeholder');
+        } else {
+          return res.redirect('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error in OAuth callback:', error);
+        res.redirect('/dashboard');
+      }
     }
   );
 
@@ -197,10 +216,29 @@ export async function setupAuth(app: Express) {
 
   app.get('/api/auth/github/callback',
     passport.authenticate('github', { failureRedirect: '/login' }),
-    (req: Request, res: Response) => {
-      const redirectPath = (req.session as any)?.authRedirect || '/dashboard';
-      delete (req.session as any).authRedirect;
-      res.redirect(redirectPath);
+    async (req: Request, res: Response) => {
+      try {
+        const user = req.user as any;
+        const redirectPath = (req.session as any)?.authRedirect;
+        delete (req.session as any).authRedirect;
+        
+        if (redirectPath) {
+          return res.redirect(redirectPath);
+        }
+        
+        // Determine appropriate dashboard based on user type
+        const { storage } = await import('./storage');
+        const stakeholderData = await storage.getStakeholderByUserId(user.id);
+        
+        if (stakeholderData) {
+          return res.redirect('/stakeholder');
+        } else {
+          return res.redirect('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error in OAuth callback:', error);
+        res.redirect('/dashboard');
+      }
     }
   );
 
@@ -275,8 +313,27 @@ export async function setupAuth(app: Express) {
 
   app.post('/api/auth/login',
     passport.authenticate('local'),
-    (req: Request, res: Response) => {
-      res.json({ user: req.user });
+    async (req: Request, res: Response) => {
+      try {
+        const user = req.user as any;
+        
+        // Determine appropriate dashboard based on user type
+        const { storage } = await import('./storage');
+        const stakeholderData = await storage.getStakeholderByUserId(user.id);
+        
+        const dashboardRoute = stakeholderData ? '/stakeholder' : '/dashboard';
+        
+        res.json({ 
+          user: req.user,
+          redirectTo: dashboardRoute
+        });
+      } catch (error) {
+        console.error('Error determining dashboard route:', error);
+        res.json({ 
+          user: req.user,
+          redirectTo: '/dashboard'
+        });
+      }
     }
   );
 

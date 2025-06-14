@@ -37,7 +37,9 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        window.location.href = '/dashboard';
+        const data = await response.json();
+        const redirectTo = data.redirectTo || '/dashboard';
+        window.location.href = redirectTo;
       } else {
         alert('Login failed. Please check your credentials.');
       }

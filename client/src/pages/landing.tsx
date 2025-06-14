@@ -11,19 +11,19 @@ import {
 
 export default function Landing() {
   const handleLogin = () => {
-    window.location.href = "/api/login";
+    window.location.href = "/login";
   };
 
   const handleStakeholderLogin = () => {
-    window.location.href = "/api/login?redirect=/stakeholder";
+    window.location.href = "/login";
   };
 
   const handleTenantRegistration = () => {
-    window.location.href = "/api/login?redirect=/tenant-registration";
+    window.location.href = "/register/tenant";
   };
 
   const handleStakeholderRegistration = () => {
-    window.location.href = "/api/login?redirect=/stakeholder-registration";
+    window.location.href = "/register/stakeholder";
   };
 
   return (

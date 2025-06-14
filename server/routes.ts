@@ -25,6 +25,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Dashboard routing based on user type
+  app.get('/api/auth/dashboard-route', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      
+      // Check if user has stakeholder data
+      const stakeholderData = await storage.getStakeholderByUserId(user.id);
+      if (stakeholderData) {
+        return res.json({ redirectTo: '/stakeholder' });
+      }
+      
+      // Default to tenant dashboard
+      return res.json({ redirectTo: '/dashboard' });
+    } catch (error) {
+      console.error("Error determining dashboard route:", error);
+      res.status(500).json({ message: "Failed to determine dashboard route" });
+    }
+  });
+
   // User profile routes
   app.put('/api/user/profile', isAuthenticated, async (req: any, res) => {
     try {

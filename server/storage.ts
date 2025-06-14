@@ -90,16 +90,48 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserProfile(userId: string, profile: UpdateUserProfile): Promise<User> {
-    const [user] = await db
-      .update(users)
+  async updateUserProfile(userId: string, data: any): Promise<any> {
+    const updatedUsers = await db.update(users)
       .set({
-        ...profile,
-        updatedAt: new Date(),
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dateOfBirth: data.dateOfBirth,
+        phone: data.phone,
+        housenumber: data.housenumber,
+        streetname: data.streetname,
+        unit: data.unit,
+        zip: data.zip,
+        knowsOrganizer: data.knowsOrganizer,
+        threatened: data.threatened,
+        evictionCase: data.evictionCase,
+        registeredWithNonProfit: data.registeredWithNonProfit,
+        receivedCitySupport: data.receivedCitySupport,
+        receivedElectedSupport: data.receivedElectedSupport,
+        atRiskHomelessness: data.atRiskHomelessness,
+        housingType: data.housingType,
+        updatedAt: new Date()
       })
       .where(eq(users.id, userId))
       .returning();
-    return user;
+
+    return updatedUsers[0];
+  }
+
+  async getStakeholderByUserId(userId: string): Promise<any> {
+    try {
+      const stakeholderData = await db.select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1);
+
+      if (stakeholderData.length > 0 && stakeholderData[0].stakeholderType) {
+        return stakeholderData[0];
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting stakeholder by user ID:', error);
+      return null;
+    }
   }
 
   // Repair issues operations
