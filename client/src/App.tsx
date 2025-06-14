@@ -124,6 +124,22 @@ function AppContent() {
     );
   }
 
+  // Check if current route is a registration page
+  const isRegistrationPage = location === "/register/tenant" || location === "/register/stakeholder";
+
+  // If it's a registration page, render without sidebar
+  if (isRegistrationPage) {
+    return (
+      <div className="min-h-screen">
+        <Switch>
+          <Route path="/register/tenant" component={TenantRegistration} />
+          <Route path="/register/stakeholder" component={StakeholderRegistration} />
+        </Switch>
+        <Toaster />
+      </div>
+    );
+  }
+
   // Protected pages with sidebar for authenticated users
   return (
     <SidebarProvider>
@@ -141,7 +157,7 @@ function AppContent() {
             </div>
           </div>
         </div>
-        
+
         <AppSidebar />
         <SidebarInset className="flex-1 mt-16">
           <div className="flex-1 overflow-auto p-6">
@@ -182,8 +198,6 @@ function AppContent() {
                   </ProtectedRoute>
                 )}
               />
-              <Route path="/register/tenant" component={TenantRegistration} />
-              <Route path="/register/stakeholder" component={StakeholderRegistration} />
               <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>
