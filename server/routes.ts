@@ -173,6 +173,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     knowsOrganizer: z.boolean(),
     threatened: z.boolean(),
     evictionCase: z.boolean(),
+    hasTenantLeader: z.boolean(),
+    registeredWithNonProfit: z.boolean(),
+    receivedCitySupport: z.boolean(),
+    receivedElectedSupport: z.boolean(),
+    atRiskHomelessness: z.boolean(),
+    housingType: z.enum(["rent_stabilized", "rent_controlled", "nycha", "private"]),
   });
 
   const stakeholderRegistrationSchema = z.object({

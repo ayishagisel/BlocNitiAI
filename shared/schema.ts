@@ -45,6 +45,12 @@ export const users = pgTable("users", {
   jurisdiction: text("jurisdiction"),
   licenseNumber: text("license_number"),
   createdAt: timestamp("created_at").defaultNow(),
+  hasTenantLeader: boolean("has_tenant_leader"),
+  registeredWithNonProfit: boolean("registered_with_non_profit"),
+  receivedCitySupport: boolean("received_city_support"),
+  receivedElectedSupport: boolean("received_elected_support"),
+  atRiskHomelessness: boolean("at_risk_homelessness"),
+  housingType: text("housing_type"),
 });
 
 // Repair issues table
@@ -92,6 +98,12 @@ export const insertUserSchema = createInsertSchema(users).pick({
   knowsOrganizer: true,
   threatened: true,
   evictionCase: true,
+  hasTenantLeader: true,
+  registeredWithNonProfit: true,
+  receivedCitySupport: true,
+  receivedElectedSupport: true,
+  atRiskHomelessness: true,
+  housingType: true,
 });
 
 export const updateUserProfileSchema = createInsertSchema(users).pick({
@@ -102,6 +114,12 @@ export const updateUserProfileSchema = createInsertSchema(users).pick({
   knowsOrganizer: true,
   threatened: true,
   evictionCase: true,
+  hasTenantLeader: true,
+  registeredWithNonProfit: true,
+  receivedCitySupport: true,
+  receivedElectedSupport: true,
+  atRiskHomelessness: true,
+  housingType: true,
 });
 
 export const insertRepairIssueSchema = createInsertSchema(repairIssues).omit({
