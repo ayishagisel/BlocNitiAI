@@ -40,7 +40,7 @@ export default function Landing() {
             style={{ 
               width: "400px", 
               height: "auto", 
-              marginBottom: "20px",
+              marginBottom: "10px",
               display: "block",
               marginLeft: "auto",
               marginRight: "auto"
