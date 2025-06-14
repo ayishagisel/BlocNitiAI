@@ -161,7 +161,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  
+  app.get("/api/login", (req, res) => {
+    const redirect = req.query.redirect as string;
+    if (redirect) {
+      // Store redirect in session or as query param
+      res.redirect(`/login?redirect=${encodeURIComponent(redirect)}`);
+    } else {
+      res.redirect("/login");
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

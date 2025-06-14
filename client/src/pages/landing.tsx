@@ -14,6 +14,10 @@ export default function Landing() {
     window.location.href = "/api/login";
   };
 
+  const handleStakeholderLogin = () => {
+    window.location.href = "/api/login?redirect=/stakeholder";
+  };
+
   return (
     <div
       style={{
@@ -87,13 +91,22 @@ export default function Landing() {
           </Text>
         </div>
 
-        <Button
-          intent={Intent.PRIMARY}
-          large
-          text="Sign In with Replit"
-          onClick={handleLogin}
-          style={{ fontSize: "16px", padding: "12px 24px" }}
-        />
+        <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+          <Button
+            intent={Intent.PRIMARY}
+            large
+            text="Tenant Sign In"
+            onClick={handleLogin}
+            style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px" }}
+          />
+          <Button
+            intent={Intent.SUCCESS}
+            large
+            text="Stakeholder Sign In"
+            onClick={handleStakeholderLogin}
+            style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px" }}
+          />
+        </div>
 
         <div style={{ marginTop: "20px" }}>
           <Text className={Classes.TEXT_SMALL} style={{ color: "#6c757d" }}>
