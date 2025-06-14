@@ -37,18 +37,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Add session configuration here
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  },
-  name: 'blocniti.sid'
-}));
+// Session configuration is handled in setupAuth
 
 
 (async () => {

@@ -111,6 +111,14 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/callback", (req, res, next) => {
+    passport.authenticate(`replitauth:${req.hostname}`, {
+      successRedirect: "/auth-success",
+      failureRedirect: "/",
+    })(req, res, next);
+  });
+
+  // Handle successful authentication and redirect
+  app.get("/auth-success", (req, res) => {
     const redirect = (req.session as any)?.authRedirect;
     const successRedirect = redirect || "/dashboard";
     
@@ -119,10 +127,7 @@ export async function setupAuth(app: Express) {
       delete (req.session as any).authRedirect;
     }
     
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: successRedirect,
-      failureRedirect: "/",
-    })(req, res, next);
+    res.redirect(successRedirect);
   });
 
   app.get("/api/logout", (req, res) => {

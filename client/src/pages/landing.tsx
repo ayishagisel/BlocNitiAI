@@ -19,11 +19,11 @@ export default function Landing() {
   };
 
   const handleTenantRegistration = () => {
-    window.location.href = "/api/login?redirect=/register/tenant";
+    window.location.href = "/api/login?redirect=/tenant-registration";
   };
 
   const handleStakeholderRegistration = () => {
-    window.location.href = "/api/login?redirect=/register/stakeholder";
+    window.location.href = "/api/login?redirect=/stakeholder-registration";
   };
 
   return (
