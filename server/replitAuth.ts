@@ -15,11 +15,12 @@ export async function setupAuth(app: Express) {
   app.use(session({
     secret: process.env.SESSION_SECRET || 'blocniti-secret-key-2024',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      httpOnly: true
+      httpOnly: true,
+      sameSite: 'lax'
     }
   }));
 
