@@ -36,9 +36,17 @@ export async function setupAuth(app: Express) {
 
   // Auth callback to handle successful authentication
   app.get('/api/auth/callback', (req: Request, res: Response) => {
-    // This endpoint is called after successful authentication
-    // Redirect to home page
-    res.redirect('/');
+    // Check if there's a stored redirect from the session
+    const redirectPath = (req.session as any)?.authRedirect;
+    
+    if (redirectPath) {
+      // Clear the stored redirect
+      delete (req.session as any).authRedirect;
+      res.redirect(redirectPath);
+    } else {
+      // Default redirect to dashboard
+      res.redirect('/dashboard');
+    }
   });
 
   // User info endpoint is handled in routes.ts
