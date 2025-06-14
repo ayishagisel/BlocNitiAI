@@ -47,7 +47,9 @@ export class DatabaseStorage implements IStorage {
     id: string;
     email: string;
     firstName?: string;
+    lastName?: string;
     profileImageUrl?: string;
+    password?: string;
   }) {
     const [user] = await db
       .insert(users)
@@ -55,10 +57,21 @@ export class DatabaseStorage implements IStorage {
         id: userData.id,
         email: userData.email,
         firstName: userData.firstName,
+        lastName: userData.lastName,
         profileImageUrl: userData.profileImageUrl,
+        password: userData.password,
         createdAt: new Date(),
       })
       .returning();
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
     return user;
   }
 
