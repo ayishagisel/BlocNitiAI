@@ -28,6 +28,10 @@ export async function setupAuth(app: Express) {
   app.use(passport.session());
 
   // Google OAuth Strategy
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.error('Missing Google OAuth credentials. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Secrets.');
+  }
+  
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'your-google-client-secret',
