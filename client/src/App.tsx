@@ -284,6 +284,22 @@ function AppContent() {
                   </ProtectedRoute>
                 )}
               />
+              <Route
+                path="/tenant-registration"
+                render={() => (
+                  <ProtectedRoute>
+                    <TenantRegistration />
+                  </ProtectedRoute>
+                )}
+              />
+              <Route
+                path="/stakeholder-registration"
+                render={() => (
+                  <ProtectedRoute>
+                    <StakeholderRegistration />
+                  </ProtectedRoute>
+                )}
+              />
               <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>

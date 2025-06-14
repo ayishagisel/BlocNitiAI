@@ -256,18 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/login", (req, res, next) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      // Store redirect in session for callback
-      (req.session as any).authRedirect = redirect;
-    }
-
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      prompt: "login consent",
-      scope: ["openid", "email", "profile", "offline_access"],
-    })(req, res, next);
-  });
+  
 
   app.post('/api/logout', (req, res) => {
     req.session.destroy((err) => {

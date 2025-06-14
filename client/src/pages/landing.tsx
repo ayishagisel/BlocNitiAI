@@ -18,6 +18,14 @@ export default function Landing() {
     window.location.href = "/api/login?redirect=/stakeholder";
   };
 
+  const handleTenantRegistration = () => {
+    window.location.href = "/api/login?redirect=/register/tenant";
+  };
+
+  const handleStakeholderRegistration = () => {
+    window.location.href = "/api/login?redirect=/register/stakeholder";
+  };
+
   return (
     <div
       style={{
@@ -100,14 +108,14 @@ export default function Landing() {
               intent={Intent.PRIMARY}
               large
               text="Register as Tenant"
-              onClick={() => window.location.href = "/register/tenant"}
+              onClick={handleTenantRegistration}
               style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px" }}
             />
             <Button
               intent={Intent.SUCCESS}
               large
               text="Register as Stakeholder"
-              onClick={() => window.location.href = "/register/stakeholder"}
+              onClick={handleStakeholderRegistration}
               style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px" }}
             />
           </div>

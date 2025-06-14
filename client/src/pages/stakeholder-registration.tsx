@@ -71,7 +71,7 @@ export default function StakeholderRegistration() {
         title: "Registration Complete",
         description: "Your stakeholder account has been created successfully.",
       });
-      window.location.href = "/api/login?redirect=/stakeholder";
+      window.location.href = "/stakeholder";
     },
     onError: (error) => {
       toast({
