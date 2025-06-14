@@ -19,6 +19,7 @@ import Home from './pages/home';
 import NotFound from './pages/not-found';
 import TenantRegistration from './pages/tenant-registration';
 import StakeholderRegistration from './pages/stakeholder-registration';
+import LoginPage from './pages/login';
 
 import { 
   SidebarProvider, 
@@ -206,6 +207,7 @@ function AppContent() {
       <div className="h-screen w-full">
         <Switch>
           <Route path="/" component={LandingPage} />
+          <Route path="/login" component={LoginPage} />
           <Route path="/register" component={UserRegistration} />
           <Route path="*" component={LandingPage} />
         </Switch>

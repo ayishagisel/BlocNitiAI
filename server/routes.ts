@@ -17,68 +17,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const userName = req.headers['x-replit-user-name'] as string;
-      const userEmail = req.headers['x-replit-user-email'] as string;
-      const userImage = req.headers['x-replit-user-profile-image'] as string;
-
-      // Try to get user from database
-      let user = await storage.getUser(userId);
-      
-      if (!user) {
-        // Create new user if they don't exist
-        user = await storage.createUser({
-          id: userId,
-          email: userEmail || '',
-          firstName: userName || '',
-          profileImageUrl: userImage || ''
-        });
-      }
-
-      // Always return user info even if database has issues
-      const userResponse = {
-        id: userId,
-        username: userName,
-        email: userEmail,
-        profileImage: userImage,
-        claims: {
-          sub: userId,
-          username: userName,
-          email: userEmail
-        },
-        ...user
-      };
-
-      res.json(userResponse);
+      const user = req.user;
+      res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
-      
-      // Return basic user info from headers even if database fails
-      const userId = req.user.claims.sub;
-      const userName = req.headers['x-replit-user-name'] as string;
-      const userEmail = req.headers['x-replit-user-email'] as string;
-      const userImage = req.headers['x-replit-user-profile-image'] as string;
-      
-      const fallbackUser = {
-        id: userId,
-        username: userName,
-        email: userEmail,
-        profileImage: userImage,
-        claims: {
-          sub: userId,
-          username: userName,
-          email: userEmail
-        }
-      };
-      
-      res.json(fallbackUser);
+      res.status(500).json({ message: "Failed to fetch user" });
     }
   });
 
   // User profile routes
   app.put('/api/user/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const result = updateUserProfileSchema.safeParse(req.body);
 
       if (!result.success) {
@@ -100,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Repair issues routes
   app.get('/api/repair-issues', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const repairIssues = await storage.getRepairIssuesByUserId(userId);
       res.json(repairIssues);
     } catch (error) {
@@ -111,7 +61,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/repair-issues', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const result = insertRepairIssueSchema.safeParse(req.body);
 
       if (!result.success) {
@@ -146,7 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/repair-issues/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const repairIssueId = parseInt(req.params.id);
 
       await storage.deleteRepairIssue(repairIssueId, userId);
@@ -160,7 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Harassment reports routes
   app.get('/api/harassment-reports', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const reports = await storage.getHarassmentReportsByUserId(userId);
       res.json(reports);
     } catch (error) {
@@ -171,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/harassment-reports', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const result = insertHarassmentReportSchema.safeParse(req.body);
 
       if (!result.success) {
@@ -305,28 +255,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/login", (req, res, next) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      // Store redirect in session for callback
-      (req.session as any).authRedirect = redirect;
-    }
-
-    // For custom auth flow, redirect to Replit auth
-    const authUrl = `https://replit.com/auth_with_repl_site?domain=${req.get('host')}`;
-    res.redirect(authUrl);
-  });
-
-  app.post('/api/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Session destruction error:', err);
-        return res.status(500).json({ message: 'Failed to logout' });
-      }
-      res.clearCookie('connect.sid');
-      res.json({ message: 'Logged out successfully' });
-    });
-  });
+  
 
   const httpServer = createServer(app);
   return httpServer;

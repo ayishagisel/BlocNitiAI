@@ -1,5 +1,7 @@
 
 import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GitHubStrategy } from 'passport-github2';
 import session from 'express-session';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { storage } from './storage';
@@ -20,36 +22,108 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Google OAuth Strategy
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'your-google-client-secret',
+    callbackURL: "/api/auth/google/callback"
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const userInfo = {
+        id: profile.id,
+        email: profile.emails?.[0]?.value || '',
+        firstName: profile.name?.givenName || '',
+        lastName: profile.name?.familyName || '',
+        profileImageUrl: profile.photos?.[0]?.value || ''
+      };
+
+      let user = await storage.getUser(profile.id);
+      if (!user) {
+        user = await storage.createUser(userInfo);
+      }
+
+      return done(null, user);
+    } catch (error) {
+      return done(error, null);
+    }
+  }));
+
+  // GitHub OAuth Strategy
+  passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID || 'your-github-client-id',
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || 'your-github-client-secret',
+    callbackURL: "/api/auth/github/callback"
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const userInfo = {
+        id: profile.id.toString(),
+        email: profile.emails?.[0]?.value || '',
+        firstName: profile.displayName?.split(' ')[0] || profile.username || '',
+        lastName: profile.displayName?.split(' ').slice(1).join(' ') || '',
+        profileImageUrl: profile.photos?.[0]?.value || ''
+      };
+
+      let user = await storage.getUser(profile.id.toString());
+      if (!user) {
+        user = await storage.createUser(userInfo);
+      }
+
+      return done(null, user);
+    } catch (error) {
+      return done(error, null);
+    }
+  }));
+
   passport.serializeUser((user: any, done) => {
-    done(null, user);
+    done(null, user.id);
   });
 
-  passport.deserializeUser((user: any, done) => {
-    done(null, user);
-  });
-
-  // Replit Auth routes using standard pattern
-  app.get('/api/login', (req: Request, res: Response) => {
-    const authUrl = `https://replit.com/auth_with_repl_site?domain=${req.get('host')}`;
-    res.redirect(authUrl);
-  });
-
-  // Auth callback to handle successful authentication
-  app.get('/api/auth/callback', (req: Request, res: Response) => {
-    // Check if there's a stored redirect from the session
-    const redirectPath = (req.session as any)?.authRedirect;
-    
-    if (redirectPath) {
-      // Clear the stored redirect
-      delete (req.session as any).authRedirect;
-      res.redirect(redirectPath);
-    } else {
-      // Default redirect to dashboard
-      res.redirect('/dashboard');
+  passport.deserializeUser(async (id: string, done) => {
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (error) {
+      done(error, null);
     }
   });
 
-  // User info endpoint is handled in routes.ts
+  // Google OAuth routes
+  app.get('/api/auth/google', 
+    passport.authenticate('google', { scope: ['profile', 'email'] })
+  );
+
+  app.get('/api/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req: Request, res: Response) => {
+      const redirectPath = (req.session as any)?.authRedirect || '/dashboard';
+      delete (req.session as any).authRedirect;
+      res.redirect(redirectPath);
+    }
+  );
+
+  // GitHub OAuth routes
+  app.get('/api/auth/github',
+    passport.authenticate('github', { scope: ['user:email'] })
+  );
+
+  app.get('/api/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/login' }),
+    (req: Request, res: Response) => {
+      const redirectPath = (req.session as any)?.authRedirect || '/dashboard';
+      delete (req.session as any).authRedirect;
+      res.redirect(redirectPath);
+    }
+  );
+
+  // Legacy login endpoint for backwards compatibility
+  app.get('/api/login', (req: Request, res: Response) => {
+    const redirect = req.query.redirect as string;
+    if (redirect) {
+      (req.session as any).authRedirect = redirect;
+    }
+    // Redirect to main login page where users can choose their provider
+    res.redirect('/#/login');
+  });
 
   app.post('/api/auth/logout', (req: Request, res: Response) => {
     req.logout((err) => {
@@ -69,20 +143,8 @@ export async function setupAuth(app: Express) {
 }
 
 export function isAuthenticated(req: any, res: Response, next: NextFunction) {
-  const userId = req.headers['x-replit-user-id'] as string;
-  
-  if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
+  if (req.isAuthenticated()) {
+    return next();
   }
-
-  // Set user info for downstream middleware
-  req.user = {
-    claims: {
-      sub: userId,
-      username: req.headers['x-replit-user-name'],
-      email: req.headers['x-replit-user-email']
-    }
-  };
-
-  next();
+  res.status(401).json({ message: 'Unauthorized' });
 }
