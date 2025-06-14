@@ -26,23 +26,25 @@ export const sessions = pgTable(
 
 // User storage table for Replit Auth
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
-  profileImageUrl: varchar("profile_image_url"),
-  
-  // Additional user fields for BlocNiti
-  dateOfBirth: date("date_of_birth"),
-  phone: varchar("phone"),
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  profileImageUrl: text("profile_image_url"),
+  dateOfBirth: text("date_of_birth"),
+  phone: text("phone"),
   address: text("address"),
-  unit: varchar("unit"),
+  unit: text("unit"),
   knowsOrganizer: boolean("knows_organizer"),
   threatened: boolean("threatened"),
   evictionCase: boolean("eviction_case"),
-  
+  userType: text("user_type").default("tenant"), // 'tenant' or 'stakeholder'
+  stakeholderType: text("stakeholder_type"), // 'organizer', 'official', 'liaison', 'media'
+  organization: text("organization"),
+  position: text("position"),
+  jurisdiction: text("jurisdiction"),
+  licenseNumber: text("license_number"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Repair issues table
@@ -57,12 +59,12 @@ export const repairIssues = pgTable("repair_issues", {
   proposedRemediation: text("proposed_remediation"),
   firstRequestDate: date("first_request_date"),
   issueBegan: date("issue_began"),
-  
+
   // AI Analysis fields
   hpdViolationClass: varchar("hpd_violation_class"),
   correctionDeadline: varchar("correction_deadline"),
   aiAnalysis: text("ai_analysis"),
-  
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

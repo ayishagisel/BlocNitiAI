@@ -16,6 +16,8 @@ import StakeholderDashboard from './components/stakeholder-dashboard';
 import LandingPage from './pages/landing';
 import Home from './pages/home';
 import NotFound from './pages/not-found';
+import TenantRegistration from './pages/tenant-registration';
+import StakeholderRegistration from './pages/stakeholder-registration';
 
 import { 
   SidebarProvider, 
@@ -180,6 +182,8 @@ function AppContent() {
                   </ProtectedRoute>
                 )}
               />
+              <Route path="/register/tenant" component={TenantRegistration} />
+              <Route path="/register/stakeholder" component={StakeholderRegistration} />
               <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>

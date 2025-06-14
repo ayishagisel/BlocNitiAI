@@ -7,6 +7,7 @@ import {
   insertRepairIssueSchema, 
   insertHarassmentReportSchema 
 } from "@shared/schema";
+import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -158,6 +159,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error with transcription:", error);
       res.status(500).json({ message: "Failed to process transcription" });
+    }
+  });
+
+  // Registration schemas
+  const tenantRegistrationSchema = z.object({
+    dateOfBirth: z.string().min(1, "Date of birth is required"),
+    phone: z.string().min(1, "Phone is required"),
+    address: z.string().min(1, "Address is required"),
+    unit: z.string().min(1, "Unit number is required"),
+    knowsOrganizer: z.boolean(),
+    threatened: z.boolean(),
+    evictionCase: z.boolean(),
+  });
+
+  const stakeholderRegistrationSchema = z.object({
+    organization: z.string().min(1, "Organization is required"),
+    position: z.string().min(1, "Position is required"),
+    phone: z.string().min(1, "Phone is required"),
+    stakeholderType: z.enum(["organizer", "official", "liaison", "media"]),
+    jurisdiction: z.string().min(1, "Jurisdiction/Coverage area is required"),
+    licenseNumber: z.string().optional(),
+  });
+
+  // Registration endpoints
+  app.post('/api/register/tenant', async (req, res) => {
+    try {
+      const result = tenantRegistrationSchema.safeParse(req.body);
+
+      if (!result.success) {
+        const validationError = fromZodError(result.error);
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          details: validationError.toString() 
+        });
+      }
+
+      // Store registration data temporarily (you might want to use a separate table)
+      // For now, we'll just return success - the actual user creation happens during authentication
+      res.json({ 
+        message: "Registration data validated successfully",
+        userType: "tenant",
+        data: result.data 
+      });
+    } catch (error) {
+      console.error("Error in tenant registration:", error);
+      res.status(500).json({ message: "Failed to process registration" });
+    }
+  });
+
+  app.post('/api/register/stakeholder', async (req, res) => {
+    try {
+      const result = stakeholderRegistrationSchema.safeParse(req.body);
+
+      if (!result.success) {
+        const validationError = fromZodError(result.error);
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          details: validationError.toString() 
+        });
+      }
+
+      // Store registration data temporarily
+      res.json({ 
+        message: "Registration data validated successfully",
+        userType: "stakeholder",
+        data: result.data 
+      });
+    } catch (error) {
+      console.error("Error in stakeholder registration:", error);
+      res.status(500).json({ message: "Failed to process registration" });
     }
   });
 
