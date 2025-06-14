@@ -185,6 +185,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const stakeholderRegistrationSchema = z.object({
+    firstName: z.string().min(1, "First name is required"),
+    middleName: z.string().optional(),
+    lastName: z.string().min(1, "Last name is required"),
+    housenumber: z.string().min(1, "Building number is required"),
+    streetname: z.string().min(1, "Street name is required"),
+    unit: z.string().optional(),
+    zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
     organization: z.string().min(1, "Organization is required"),
     position: z.string().min(1, "Position is required"),
     phone: z.string().min(1, "Phone is required"),

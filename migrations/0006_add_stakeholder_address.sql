@@ -1,0 +1,4 @@
+
+ALTER TABLE users ADD COLUMN housenumber TEXT;
+ALTER TABLE users ADD COLUMN streetname TEXT;
+ALTER TABLE users ADD COLUMN zip TEXT;

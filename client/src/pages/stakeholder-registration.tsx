@@ -22,6 +22,13 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
 const stakeholderRegistrationSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1, "Last name is required"),
+  housenumber: z.string().min(1, "Building number is required"),
+  streetname: z.string().min(1, "Street name is required"),
+  unit: z.string().optional(),
+  zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
   organization: z.string().min(1, "Organization is required"),
   position: z.string().min(1, "Position is required"),
   phone: z.string().min(1, "Phone is required"),
@@ -38,6 +45,13 @@ export default function StakeholderRegistration() {
   const form = useForm<StakeholderRegistrationData>({
     resolver: zodResolver(stakeholderRegistrationSchema),
     defaultValues: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      housenumber: "",
+      streetname: "",
+      unit: "",
+      zip: "",
       organization: "",
       position: "",
       phone: "",
@@ -116,6 +130,111 @@ export default function StakeholderRegistration() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" style={{ textAlign: "left" }}>
+            {/* Personal Information */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-gray-900">Personal Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="middleName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Middle Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Michael" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Address Information */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-gray-900">Address Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField
+                  control={form.control}
+                  name="housenumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Building # *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="streetname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Street Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Main Street" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="zip"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>ZIP Code *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="10001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit/Suite Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Apt 1A" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             {/* Professional Information */}
             <div className="space-y-4">
               <h4 className="text-lg font-medium text-gray-900">Professional Information</h4>
