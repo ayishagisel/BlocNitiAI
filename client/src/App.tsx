@@ -32,6 +32,16 @@ import {
 } from './components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { queryClient } from "@/lib/queryClient";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 function AppSidebar() {
   return (
@@ -95,6 +105,61 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function UserProfileDropdown() {
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  const handleEditProfile = () => {
+    setLocation('/profile');
+  };
+
+  if (!user) return null;
+
+  const initials = `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.profileImageUrl} alt={user.firstName} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user.firstName} {user.lastName}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleEditProfile}>
+          <i className="fas fa-user mr-2 h-4 w-4"></i>
+          <span>Edit Profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout}>
+          <i className="fas fa-sign-out-alt mr-2 h-4 w-4"></i>
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 function AppContent() {
   const { user, loading } = useAuth();
   const [location] = useLocation();
@@ -155,6 +220,7 @@ function AppContent() {
                 className="h-12 w-auto"
               />
             </div>
+            <UserProfileDropdown />
           </div>
         </div>
 
@@ -195,6 +261,12 @@ function AppContent() {
               <Route path="/stakeholder" component={() => (
                   <ProtectedRoute>
                     <StakeholderDashboard />
+                  </ProtectedRoute>
+                )}
+              />
+              <Route path="/profile" component={() => (
+                  <ProtectedRoute>
+                    <UserRegistration />
                   </ProtectedRoute>
                 )}
               />

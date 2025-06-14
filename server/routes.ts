@@ -211,7 +211,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Search query should use: housenumber + " " + streetname
       // This will populate: boro, block, lot, communityboard, censustract, buildingid, 
       // dobbuildingclass, legalstories, legalclassa, managementprogram
-      
+
       // Store registration data temporarily (you might want to use a separate table)
       // For now, we'll just return success - the actual user creation happens during authentication
       res.json({ 
@@ -255,11 +255,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store redirect in session for callback
       (req.session as any).authRedirect = redirect;
     }
-    
+
     passport.authenticate(`replitauth:${req.hostname}`, {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
     })(req, res, next);
+  });
+
+  app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Session destruction error:', err);
+        return res.status(500).json({ message: 'Failed to logout' });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: 'Logged out successfully' });
+    });
   });
 
   const httpServer = createServer(app);
