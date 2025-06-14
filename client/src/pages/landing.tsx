@@ -11,11 +11,11 @@ import {
 
 export default function Landing() {
   const handleLogin = () => {
-    window.location.href = "/login";
+    window.location.href = "/login?type=tenant";
   };
 
   const handleStakeholderLogin = () => {
-    window.location.href = "/login";
+    window.location.href = "/login?type=stakeholder";
   };
 
   const handleTenantRegistration = () => {
