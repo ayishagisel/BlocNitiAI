@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
@@ -33,25 +33,33 @@ const tenantRegistrationSchema = z.object({
   zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
   housingType: z.enum(["rent_stabilized", "rent_controlled", "nycha", "private"]),
   knowsOrganizer: z.boolean(),
-  organizerName: z.string().optional(),
-  organizerPhone: z.string().optional(),
-  organizerEmail: z.string().optional(),
-  organizerCompany: z.string().optional(),
+  organizers: z.array(z.object({
+    name: z.string().min(1, "Name is required"),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    company: z.string().optional(),
+  })).optional(),
   threatened: z.boolean(),
   evictionCase: z.boolean(),
   hasHpProceeding: z.boolean(),
   registeredWithNonProfit: z.boolean(),
-  nonProfitName: z.string().optional(),
-  nonProfitPhone: z.string().optional(),
-  nonProfitEmail: z.string().optional(),
+  nonProfits: z.array(z.object({
+    name: z.string().min(1, "Organization name is required"),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+  })).optional(),
   receivedCitySupport: z.boolean(),
-  cityAgencyName: z.string().optional(),
-  cityAgencyPhone: z.string().optional(),
-  cityAgencyEmail: z.string().optional(),
+  cityAgencies: z.array(z.object({
+    name: z.string().min(1, "Agency name is required"),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+  })).optional(),
   receivedElectedSupport: z.boolean(),
-  electedOfficialName: z.string().optional(),
-  electedOfficialPhone: z.string().optional(),
-  electedOfficialEmail: z.string().optional(),
+  electedOfficials: z.array(z.object({
+    name: z.string().min(1, "Official name is required"),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+  })).optional(),
   atRiskHomelessness: z.boolean(),
 });
 
@@ -74,25 +82,16 @@ export default function TenantRegistration() {
       zip: "",
       housingType: "private",
       knowsOrganizer: false,
-      organizerName: "",
-      organizerPhone: "",
-      organizerEmail: "",
-      organizerCompany: "",
+      organizers: [],
       threatened: false,
       evictionCase: false,
       hasHpProceeding: false,
       registeredWithNonProfit: false,
-      nonProfitName: "",
-      nonProfitPhone: "",
-      nonProfitEmail: "",
+      nonProfits: [],
       receivedCitySupport: false,
-      cityAgencyName: "",
-      cityAgencyPhone: "",
-      cityAgencyEmail: "",
+      cityAgencies: [],
       receivedElectedSupport: false,
-      electedOfficialName: "",
-      electedOfficialPhone: "",
-      electedOfficialEmail: "",
+      electedOfficials: [],
       atRiskHomelessness: false,
     },
   });
@@ -116,6 +115,26 @@ export default function TenantRegistration() {
         variant: "destructive",
       });
     },
+  });
+
+  const organizersFieldArray = useFieldArray({
+    control: form.control,
+    name: "organizers",
+  });
+
+  const nonProfitsFieldArray = useFieldArray({
+    control: form.control,
+    name: "nonProfits",
+  });
+
+  const cityAgenciesFieldArray = useFieldArray({
+    control: form.control,
+    name: "cityAgencies",
+  });
+
+  const electedOfficialsFieldArray = useFieldArray({
+    control: form.control,
+    name: "electedOfficials",
   });
 
   const onSubmit = (data: TenantRegistrationData) => {
@@ -386,61 +405,96 @@ export default function TenantRegistration() {
               {/* Conditional fields for organizer contact info */}
               {form.watch("knowsOrganizer") && (
                 <div className="ml-6 space-y-4 border-l-2 border-blue-200 pl-4">
-                  <h5 className="text-sm font-medium text-gray-700">Organizer Contact Information</h5>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="organizerName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Organizer name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="organizerCompany"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Company/Organization</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Organization name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="organizerPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="organizerEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="organizer@example.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="flex justify-between items-center">
+                    <h5 className="text-sm font-medium text-gray-700">Organizer Contact Information</h5>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => organizersFieldArray.append({ name: "", phone: "", email: "", company: "" })}
+                    >
+                      Add Another Organizer
+                    </Button>
                   </div>
+                  {organizersFieldArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-gray-200 rounded-lg">
+                      <div className="md:col-span-2 flex justify-between items-center">
+                        <h6 className="text-sm font-medium text-gray-600">Organizer #{index + 1}</h6>
+                        {organizersFieldArray.fields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => organizersFieldArray.remove(index)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`organizers.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Organizer name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`organizers.${index}.company`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Company/Organization</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Organization name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`organizers.${index}.phone`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone</FormLabel>
+                            <FormControl>
+                              <Input placeholder="(555) 123-4567" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`organizers.${index}.email`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="organizer@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                  {organizersFieldArray.fields.length === 0 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => organizersFieldArray.append({ name: "", phone: "", email: "", company: "" })}
+                      className="w-full"
+                    >
+                      Add Organizer Contact
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -563,48 +617,83 @@ export default function TenantRegistration() {
               {/* Conditional fields for non-profit contact info */}
               {form.watch("registeredWithNonProfit") && (
                 <div className="ml-6 space-y-4 border-l-2 border-green-200 pl-4">
-                  <h5 className="text-sm font-medium text-gray-700">Non-Profit Contact Information</h5>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="nonProfitName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Organization Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Legal Aid Society" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="nonProfitPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="nonProfitEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="contact@nonprofit.org" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="flex justify-between items-center">
+                    <h5 className="text-sm font-medium text-gray-700">Non-Profit Contact Information</h5>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => nonProfitsFieldArray.append({ name: "", phone: "", email: "" })}
+                    >
+                      Add Another Non-Profit
+                    </Button>
                   </div>
+                  {nonProfitsFieldArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+                      <div className="md:col-span-3 flex justify-between items-center">
+                        <h6 className="text-sm font-medium text-gray-600">Non-Profit #{index + 1}</h6>
+                        {nonProfitsFieldArray.fields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => nonProfitsFieldArray.remove(index)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`nonProfits.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Organization Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Legal Aid Society" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`nonProfits.${index}.phone`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone</FormLabel>
+                            <FormControl>
+                              <Input placeholder="(555) 123-4567" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`nonProfits.${index}.email`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="contact@nonprofit.org" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                  {nonProfitsFieldArray.fields.length === 0 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => nonProfitsFieldArray.append({ name: "", phone: "", email: "" })}
+                      className="w-full"
+                    >
+                      Add Non-Profit Contact
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -640,48 +729,83 @@ export default function TenantRegistration() {
               {/* Conditional fields for city agency contact info */}
               {form.watch("receivedCitySupport") && (
                 <div className="ml-6 space-y-4 border-l-2 border-orange-200 pl-4">
-                  <h5 className="text-sm font-medium text-gray-700">City Agency Contact Information</h5>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="cityAgencyName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Agency Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="HPD, NYCHA, etc." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="cityAgencyPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="cityAgencyEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="contact@agency.nyc.gov" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="flex justify-between items-center">
+                    <h5 className="text-sm font-medium text-gray-700">City Agency Contact Information</h5>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => cityAgenciesFieldArray.append({ name: "", phone: "", email: "" })}
+                    >
+                      Add Another Agency
+                    </Button>
                   </div>
+                  {cityAgenciesFieldArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+                      <div className="md:col-span-3 flex justify-between items-center">
+                        <h6 className="text-sm font-medium text-gray-600">City Agency #{index + 1}</h6>
+                        {cityAgenciesFieldArray.fields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => cityAgenciesFieldArray.remove(index)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`cityAgencies.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Agency Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="HPD, NYCHA, etc." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`cityAgencies.${index}.phone`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone</FormLabel>
+                            <FormControl>
+                              <Input placeholder="(555) 123-4567" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`cityAgencies.${index}.email`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="contact@agency.nyc.gov" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                  {cityAgenciesFieldArray.fields.length === 0 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => cityAgenciesFieldArray.append({ name: "", phone: "", email: "" })}
+                      className="w-full"
+                    >
+                      Add City Agency Contact
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -717,48 +841,83 @@ export default function TenantRegistration() {
               {/* Conditional fields for elected official contact info */}
               {form.watch("receivedElectedSupport") && (
                 <div className="ml-6 space-y-4 border-l-2 border-red-200 pl-4">
-                  <h5 className="text-sm font-medium text-gray-700">Elected Official Contact Information</h5>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="electedOfficialName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Official Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Council Member, Senator, etc." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="electedOfficialPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="electedOfficialEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="office@official.gov" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="flex justify-between items-center">
+                    <h5 className="text-sm font-medium text-gray-700">Elected Official Contact Information</h5>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => electedOfficialsFieldArray.append({ name: "", phone: "", email: "" })}
+                    >
+                      Add Another Official
+                    </Button>
                   </div>
+                  {electedOfficialsFieldArray.fields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+                      <div className="md:col-span-3 flex justify-between items-center">
+                        <h6 className="text-sm font-medium text-gray-600">Elected Official #{index + 1}</h6>
+                        {electedOfficialsFieldArray.fields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => electedOfficialsFieldArray.remove(index)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`electedOfficials.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Official Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Council Member, Senator, etc." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`electedOfficials.${index}.phone`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone</FormLabel>
+                            <FormControl>
+                              <Input placeholder="(555) 123-4567" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`electedOfficials.${index}.email`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="office@official.gov" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                  {electedOfficialsFieldArray.fields.length === 0 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => electedOfficialsFieldArray.append({ name: "", phone: "", email: "" })}
+                      className="w-full"
+                    >
+                      Add Elected Official Contact
+                    </Button>
+                  )}
                 </div>
               )}
 
