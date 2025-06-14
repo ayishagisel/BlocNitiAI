@@ -111,8 +111,16 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/callback", (req, res, next) => {
+    const redirect = (req.session as any)?.authRedirect;
+    const successRedirect = redirect || "/dashboard";
+    
+    // Clear the redirect from session
+    if ((req.session as any)?.authRedirect) {
+      delete (req.session as any).authRedirect;
+    }
+    
     passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/dashboard",
+      successReturnToOrRedirect: successRedirect,
       failureRedirect: "/",
     })(req, res, next);
   });
