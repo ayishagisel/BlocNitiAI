@@ -108,8 +108,24 @@ function AppContent() {
     );
   }
 
-  const publicRoutes = ['/', '/register'];
+  const publicRoutes = ['/', '/register', '/register/tenant', '/register/stakeholder'];
   const isPublicRoute = publicRoutes.includes(location);
+
+  // Check if current route is a registration page
+  const isRegistrationPage = location === "/register/tenant" || location === "/register/stakeholder";
+
+  // If it's a registration page, render without sidebar (for both authenticated and non-authenticated users)
+  if (isRegistrationPage) {
+    return (
+      <div className="min-h-screen">
+        <Switch>
+          <Route path="/register/tenant" component={TenantRegistration} />
+          <Route path="/register/stakeholder" component={StakeholderRegistration} />
+        </Switch>
+        <Toaster />
+      </div>
+    );
+  }
 
   // Show public pages without sidebar for non-authenticated users or public routes
   if (!user || isPublicRoute) {
@@ -120,22 +136,6 @@ function AppContent() {
           <Route path="/register" component={UserRegistration} />
           <Route path="*" component={LandingPage} />
         </Switch>
-      </div>
-    );
-  }
-
-  // Check if current route is a registration page
-  const isRegistrationPage = location === "/register/tenant" || location === "/register/stakeholder";
-
-  // If it's a registration page, render without sidebar
-  if (isRegistrationPage) {
-    return (
-      <div className="min-h-screen">
-        <Switch>
-          <Route path="/register/tenant" component={TenantRegistration} />
-          <Route path="/register/stakeholder" component={StakeholderRegistration} />
-        </Switch>
-        <Toaster />
       </div>
     );
   }
