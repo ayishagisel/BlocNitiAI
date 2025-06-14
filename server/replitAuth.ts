@@ -2,6 +2,7 @@
 import passport from 'passport';
 import session from 'express-session';
 import type { Express, Request, Response, NextFunction } from 'express';
+import { storage } from './storage';
 
 export async function setupAuth(app: Express) {
   // Session configuration
@@ -40,61 +41,7 @@ export async function setupAuth(app: Express) {
     res.redirect('/');
   });
 
-  // User info endpoint
-  app.get('/api/auth/user', async (req: Request, res: Response) => {
-    const userId = req.headers['x-replit-user-id'] as string;
-    const userName = req.headers['x-replit-user-name'] as string;
-    const userEmail = req.headers['x-replit-user-email'] as string;
-    const userImage = req.headers['x-replit-user-profile-image'] as string;
-
-    if (!userId) {
-      return res.status(401).json({ message: 'Not authenticated' });
-    }
-
-    try {
-      // Try to get or create user in database
-      let user = await storage.getUser(userId);
-      if (!user) {
-        // Create new user if they don't exist
-        user = await storage.createUser({
-          id: userId,
-          email: userEmail || '',
-          firstName: userName || '',
-          profileImageUrl: userImage || ''
-        });
-      }
-
-      const userResponse = {
-        id: userId,
-        username: userName,
-        email: userEmail,
-        profileImage: userImage,
-        claims: {
-          sub: userId,
-          username: userName,
-          email: userEmail
-        },
-        ...user
-      };
-
-      res.json(userResponse);
-    } catch (error) {
-      console.error('Error fetching/creating user:', error);
-      // Return basic user info even if database operation fails
-      const user = {
-        id: userId,
-        username: userName,
-        email: userEmail,
-        profileImage: userImage,
-        claims: {
-          sub: userId,
-          username: userName,
-          email: userEmail
-        }
-      };
-      res.json(user);
-    }
-  });
+  // User info endpoint is handled in routes.ts
 
   app.post('/api/auth/logout', (req: Request, res: Response) => {
     req.logout((err) => {
