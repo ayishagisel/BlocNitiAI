@@ -43,7 +43,9 @@ export default function Landing() {
               marginBottom: "10px",
               display: "block",
               marginLeft: "auto",
-              marginRight: "auto"
+              marginRight: "auto",
+              clipPath: "inset(15% 10% 15% 10%)",
+              transform: "scale(1.3)"
             }} 
             onError={(e) => {
               console.error('Logo failed to load');
