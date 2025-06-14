@@ -22,6 +22,9 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
 const tenantRegistrationSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1, "Last name is required"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   phone: z.string().min(1, "Phone is required"),
   housenumber: z.string().min(1, "Building number is required"),
@@ -47,6 +50,9 @@ export default function TenantRegistration() {
   const form = useForm<TenantRegistrationData>({
     resolver: zodResolver(tenantRegistrationSchema),
     defaultValues: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
       dateOfBirth: "",
       phone: "",
       housenumber: "",
@@ -135,6 +141,50 @@ export default function TenantRegistration() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" style={{ textAlign: "left" }}>
             {/* Personal Information */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-medium text-gray-900">Personal Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="First Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="middleName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Middle Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Middle Name (Optional)" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Last Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}

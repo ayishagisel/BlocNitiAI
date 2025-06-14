@@ -164,6 +164,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Registration schemas
   const tenantRegistrationSchema = z.object({
+    firstName: z.string().min(1, "First name is required"),
+    middleName: z.string().optional(),
+    lastName: z.string().min(1, "Last name is required"),
     dateOfBirth: z.string().min(1, "Date of birth is required"),
     phone: z.string().min(1, "Phone is required"),
     housenumber: z.string().min(1, "Building number is required"),
