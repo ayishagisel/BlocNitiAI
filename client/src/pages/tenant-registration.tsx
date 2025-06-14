@@ -24,8 +24,10 @@ import { apiRequest } from "@/lib/queryClient";
 const tenantRegistrationSchema = z.object({
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   phone: z.string().min(1, "Phone is required"),
-  address: z.string().min(1, "Address is required"),
+  housenumber: z.string().min(1, "Building number is required"),
+  streetname: z.string().min(1, "Street name is required"),
   unit: z.string().min(1, "Unit number is required"),
+  zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
   knowsOrganizer: z.boolean(),
   threatened: z.boolean(),
   evictionCase: z.boolean(),
@@ -41,8 +43,10 @@ export default function TenantRegistration() {
     defaultValues: {
       dateOfBirth: "",
       phone: "",
-      address: "",
+      housenumber: "",
+      streetname: "",
       unit: "",
+      zip: "",
       knowsOrganizer: false,
       threatened: false,
       evictionCase: false,
@@ -151,22 +155,57 @@ export default function TenantRegistration() {
             {/* Address Information */}
             <div className="space-y-4">
               <h4 className="text-lg font-medium text-gray-900">Address Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="md:col-span-2">
+              <p className="text-sm text-gray-600">
+                Please enter your address details to match with NYC Housing database
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
                   <FormField
                     control={form.control}
-                    name="address"
+                    name="housenumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Street Address *</FormLabel>
+                        <FormLabel>Building # *</FormLabel>
                         <FormControl>
-                          <Input placeholder="123 Main Street" {...field} />
+                          <Input placeholder="123" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+                <div className="md:col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="streetname"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Street Name *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Main Street" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name="zip"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ZIP Code *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="10001" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <FormField
                     control={form.control}

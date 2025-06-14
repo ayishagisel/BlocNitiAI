@@ -166,8 +166,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const tenantRegistrationSchema = z.object({
     dateOfBirth: z.string().min(1, "Date of birth is required"),
     phone: z.string().min(1, "Phone is required"),
-    address: z.string().min(1, "Address is required"),
+    housenumber: z.string().min(1, "Building number is required"),
+    streetname: z.string().min(1, "Street name is required"),
     unit: z.string().min(1, "Unit number is required"),
+    zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
     knowsOrganizer: z.boolean(),
     threatened: z.boolean(),
     evictionCase: z.boolean(),
@@ -195,6 +197,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // TODO: Integrate with NYC Housing API to fetch additional building data
+      // API endpoint: https://data.cityofnewyork.us/resource/kj4p-ruqc.json
+      // Search query should use: housenumber + " " + streetname
+      // This will populate: boro, block, lot, communityboard, censustract, buildingid, 
+      // dobbuildingclass, legalstories, legalclassa, managementprogram
+      
       // Store registration data temporarily (you might want to use a separate table)
       // For now, we'll just return success - the actual user creation happens during authentication
       res.json({ 
