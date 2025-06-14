@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,7 +55,9 @@ const tenantRegistrationSchema = z.object({
   })).optional(),
   receivedElectedSupport: z.boolean(),
   electedOfficials: z.array(z.object({
-    name: z.string().min(1, "Official name is required"),
+    title: z.string().min(1, "Title is required"),
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
     phone: z.string().optional(),
     email: z.string().optional(),
   })).optional(),
@@ -67,7 +68,7 @@ type TenantRegistrationData = z.infer<typeof tenantRegistrationSchema>;
 
 export default function TenantRegistration() {
   const { toast } = useToast();
-  
+
   const form = useForm<TenantRegistrationData>({
     resolver: zodResolver(tenantRegistrationSchema),
     defaultValues: {
@@ -372,7 +373,7 @@ export default function TenantRegistration() {
             {/* Legal Context Questions */}
             <div className="space-y-6 bg-gray-50 p-6 rounded-lg">
               <h4 className="text-lg font-medium text-gray-900">Legal Context Assessment</h4>
-              
+
               <FormField
                 control={form.control}
                 name="knowsOrganizer"
@@ -841,40 +842,54 @@ export default function TenantRegistration() {
               {/* Conditional fields for elected official contact info */}
               {form.watch("receivedElectedSupport") && (
                 <div className="ml-6 space-y-4 border-l-2 border-red-200 pl-4">
-                  <div className="flex justify-between items-center">
+                  <div className="md:col-span-5 flex justify-between items-center">
                     <h5 className="text-sm font-medium text-gray-700">Elected Official Contact Information</h5>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => electedOfficialsFieldArray.append({ name: "", phone: "", email: "" })}
+                      onClick={() => electedOfficialsFieldArray.append({ title: "", firstName: "", lastName: "", phone: "", email: "" })}
                     >
                       Add Another Official
                     </Button>
                   </div>
                   {electedOfficialsFieldArray.fields.map((field, index) => (
-                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
-                      <div className="md:col-span-3 flex justify-between items-center">
-                        <h6 className="text-sm font-medium text-gray-600">Elected Official #{index + 1}</h6>
-                        {electedOfficialsFieldArray.fields.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => electedOfficialsFieldArray.remove(index)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
+                    <div key={field.id} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4 border border-gray-200 rounded-lg">
+                      
                       <FormField
                         control={form.control}
-                        name={`electedOfficials.${index}.name`}
+                        name={`electedOfficials.${index}.title`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Official Name *</FormLabel>
+                            <FormLabel>Official Title *</FormLabel>
                             <FormControl>
                               <Input placeholder="Council Member, Senator, etc." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                       <FormField
+                        control={form.control}
+                        name={`electedOfficials.${index}.firstName`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>First Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="First Name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                       <FormField
+                        control={form.control}
+                        name={`electedOfficials.${index}.lastName`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Last Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Last Name" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -912,7 +927,7 @@ export default function TenantRegistration() {
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => electedOfficialsFieldArray.append({ name: "", phone: "", email: "" })}
+                      onClick={() => electedOfficialsFieldArray.append({ title: "", firstName: "", lastName: "", phone: "", email: "" })}
                       className="w-full"
                     >
                       Add Elected Official Contact
