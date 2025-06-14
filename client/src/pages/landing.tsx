@@ -38,7 +38,7 @@ export default function Landing() {
             src="./BlocNiti-LogoNB_1749709973044.png" 
             alt="BlocNiti AI Logo" 
             style={{ 
-              width: "240px", 
+              width: "400px", 
               height: "auto", 
               marginBottom: "20px",
               display: "block",
