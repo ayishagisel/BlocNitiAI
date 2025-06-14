@@ -150,7 +150,7 @@ function AppContent() {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="h-8 w-8" />
               <img 
-                src="./BlocNiti-LogoNB_1749709973044.png" 
+                src="/BlocNiti-LogoNB_1749709973044.png" 
                 alt="BlocNiti AI" 
                 className="h-12 w-auto"
               />

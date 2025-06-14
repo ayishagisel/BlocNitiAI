@@ -95,7 +95,7 @@ export default function TenantRegistration() {
       >
         <div style={{ marginBottom: "30px" }}>
           <img 
-            src="./BlocNiti-LogoNB_1749709973044.png" 
+            src="/BlocNiti-LogoNB_1749709973044.png" 
             alt="BlocNiti AI Logo" 
             style={{ 
               width: "300px", 
