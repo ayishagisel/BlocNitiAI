@@ -52,6 +52,20 @@ export const users = pgTable("users", {
   receivedElectedSupport: boolean("received_elected_support"),
   atRiskHomelessness: boolean("at_risk_homelessness"),
   housingType: text("housing_type"),
+  organizerName: text("organizer_name"),
+  organizerPhone: text("organizer_phone"),
+  organizerEmail: text("organizer_email"),
+  organizerCompany: text("organizer_company"),
+  nonProfitName: text("non_profit_name"),
+  nonProfitPhone: text("non_profit_phone"),
+  nonProfitEmail: text("non_profit_email"),
+  cityAgencyName: text("city_agency_name"),
+  cityAgencyPhone: text("city_agency_phone"),
+  cityAgencyEmail: text("city_agency_email"),
+  electedOfficialName: text("elected_official_name"),
+  electedOfficialPhone: text("elected_official_phone"),
+  electedOfficialEmail: text("elected_official_email"),
+  hasHpProceeding: boolean("has_hp_proceeding"),
 });
 
 // Repair issues table
@@ -106,6 +120,20 @@ export const insertUserSchema = createInsertSchema(users).pick({
   receivedElectedSupport: true,
   atRiskHomelessness: true,
   housingType: true,
+  organizerName: true,
+  organizerPhone: true,
+  organizerEmail: true,
+  organizerCompany: true,
+  nonProfitName: true,
+  nonProfitPhone: true,
+  nonProfitEmail: true,
+  cityAgencyName: true,
+  cityAgencyPhone: true,
+  cityAgencyEmail: true,
+  electedOfficialName: true,
+  electedOfficialPhone: true,
+  electedOfficialEmail: true,
+  hasHpProceeding: true,
 });
 
 export const updateUserProfileSchema = createInsertSchema(users).pick({
@@ -122,6 +150,20 @@ export const updateUserProfileSchema = createInsertSchema(users).pick({
   receivedElectedSupport: true,
   atRiskHomelessness: true,
   housingType: true,
+  organizerName: true,
+  organizerPhone: true,
+  organizerEmail: true,
+  organizerCompany: true,
+  nonProfitName: true,
+  nonProfitPhone: true,
+  nonProfitEmail: true,
+  cityAgencyName: true,
+  cityAgencyPhone: true,
+  cityAgencyEmail: true,
+  electedOfficialName: true,
+  electedOfficialPhone: true,
+  electedOfficialEmail: true,
+  hasHpProceeding: true,
 });
 
 export const insertRepairIssueSchema = createInsertSchema(repairIssues).omit({
