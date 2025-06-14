@@ -62,11 +62,12 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md bg-white shadow-xl">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v6m8-6v6" />
-            </svg>
+          <div className="mx-auto mb-4">
+            <img 
+              src="/BN Logo Only.png" 
+              alt="BlocNiti AI Logo" 
+              className="w-16 h-16 object-contain"
+            />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">Welcome to BlocNiti AI</CardTitle>
           <CardDescription className="text-gray-600">
