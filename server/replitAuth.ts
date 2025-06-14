@@ -337,6 +337,15 @@ export async function setupAuth(app: Express) {
     }
   );
 
+  // User status endpoint for auth checking
+  app.get('/api/auth/user', (req: Request, res: Response) => {
+    if (req.isAuthenticated()) {
+      res.json(req.user);
+    } else {
+      res.status(401).json({ message: 'Not authenticated' });
+    }
+  });
+
   // Legacy login endpoint for backwards compatibility
   app.get('/api/login', (req: Request, res: Response) => {
     const redirect = req.query.redirect as string;

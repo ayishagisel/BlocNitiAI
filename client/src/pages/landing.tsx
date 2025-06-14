@@ -11,11 +11,7 @@ import {
 
 export default function Landing() {
   const handleLogin = () => {
-    window.location.href = "/login?type=tenant";
-  };
-
-  const handleStakeholderLogin = () => {
-    window.location.href = "/login?type=stakeholder";
+    window.location.href = "/login";
   };
 
   const handleTenantRegistration = () => {
@@ -123,22 +119,15 @@ export default function Landing() {
 
         <div>
           <H3 style={{ marginBottom: "15px", color: "#2c3e50" }}>
-            Existing Users - Sign In
+            Existing Users
           </H3>
-          <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
             <Button
-              intent={Intent.NONE}
+              intent={Intent.PRIMARY}
               large
-              text="Tenant Sign In"
+              text="Sign In"
               onClick={handleLogin}
-              style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px", backgroundColor: "#f8f9fa", border: "2px solid #215db0" }}
-            />
-            <Button
-              intent={Intent.NONE}
-              large
-              text="Stakeholder Sign In"
-              onClick={handleStakeholderLogin}
-              style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px", backgroundColor: "#f8f9fa", border: "2px solid #28a745" }}
+              style={{ fontSize: "16px", padding: "12px 32px", minWidth: "160px" }}
             />
           </div>
         </div>
