@@ -87,10 +87,14 @@ export async function setupAuth(app: Express) {
     }
   });
 
-  // Google OAuth routes
-  app.get('/api/auth/google', 
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-  );
+  // Google OAuth routes - these should NOT require authentication
+  app.get('/api/auth/google', (req: Request, res: Response, next: NextFunction) => {
+    const redirect = req.query.redirect as string;
+    if (redirect) {
+      (req.session as any).authRedirect = redirect;
+    }
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+  });
 
   app.get('/api/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
@@ -101,10 +105,14 @@ export async function setupAuth(app: Express) {
     }
   );
 
-  // GitHub OAuth routes
-  app.get('/api/auth/github',
-    passport.authenticate('github', { scope: ['user:email'] })
-  );
+  // GitHub OAuth routes - these should NOT require authentication
+  app.get('/api/auth/github', (req: Request, res: Response, next: NextFunction) => {
+    const redirect = req.query.redirect as string;
+    if (redirect) {
+      (req.session as any).authRedirect = redirect;
+    }
+    passport.authenticate('github', { scope: ['user:email'] })(req, res, next);
+  });
 
   app.get('/api/auth/github/callback',
     passport.authenticate('github', { failureRedirect: '/login' }),
