@@ -20,6 +20,9 @@ import NotFound from './pages/not-found';
 import TenantRegistration from './pages/tenant-registration';
 import StakeholderRegistration from './pages/stakeholder-registration';
 import LoginPage from './pages/login';
+import PrivacyPolicy from "./pages/privacy-policy";
+import TermsOfService from "./pages/terms-of-service";
+import DataDeletion from "./pages/data-deletion";
 
 import { 
   SidebarProvider, 
@@ -302,6 +305,9 @@ function AppContent() {
                   </ProtectedRoute>
                 )}
               />
+              <Route path="/privacy-policy" component={PrivacyPolicy} />
+              <Route path="/terms-of-service" component={TermsOfService} />
+              <Route path="/data-deletion" component={DataDeletion} />
               <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>
