@@ -97,9 +97,9 @@ function AppSidebar() {
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
-  const { isComplete } = useProfileCompleteness(user);
+  const { isComplete, loading: profileLoading } = useProfileCompleteness(user);
 
-  if (isLoading) {
+  if (isLoading || profileLoading) {
     return <div>Loading...</div>;
   }
 
@@ -109,7 +109,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   // If user is authenticated but profile is incomplete, redirect to profile page
   // unless they're already on the profile page
-  if (user && !isComplete && location !== '/profile') {
+  if (user && isComplete === false && location !== '/profile') {
     setLocation('/profile');
     return <div>Redirecting to complete profile...</div>;
   }
