@@ -191,8 +191,17 @@ function AppContent() {
   // Check if current route is a registration page
   const isRegistrationPage = location === "/register/tenant" || location === "/register/stakeholder";
 
-  // If it's a registration page, render without sidebar (for both authenticated and non-authenticated users)
-  if (isRegistrationPage) {
+  // If it's a registration page and user is not authenticated, redirect to login
+  if (isRegistrationPage && !user) {
+    return (
+      <div className="h-screen w-full">
+        <LoginPage />
+      </div>
+    );
+  }
+
+  // If it's a registration page and user is authenticated, render without sidebar
+  if (isRegistrationPage && user) {
     return (
       <div className="min-h-screen">
         <Switch>
