@@ -1,4 +1,3 @@
-
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as GitHubStrategy } from 'passport-github2';
@@ -31,31 +30,33 @@ export async function setupAuth(app: Express) {
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     console.error('Missing Google OAuth credentials. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Secrets.');
   }
-  
-  passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'your-google-client-secret',
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback"
-  }, async (accessToken, refreshToken, profile, done) => {
-    try {
-      const userInfo = {
-        id: profile.id,
-        email: profile.emails?.[0]?.value || '',
-        firstName: profile.name?.givenName || '',
-        lastName: profile.name?.familyName || '',
-        profileImageUrl: profile.photos?.[0]?.value || ''
-      };
 
-      let user = await storage.getUser(profile.id);
-      if (!user) {
-        user = await storage.createUser(userInfo);
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    passport.use(new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'your-google-client-secret',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback"
+    }, async (accessToken, refreshToken, profile, done) => {
+      try {
+        const userInfo = {
+          id: profile.id,
+          email: profile.emails?.[0]?.value || '',
+          firstName: profile.name?.givenName || '',
+          lastName: profile.name?.familyName || '',
+          profileImageUrl: profile.photos?.[0]?.value || ''
+        };
+
+        let user = await storage.getUser(profile.id);
+        if (!user) {
+          user = await storage.createUser(userInfo);
+        }
+
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
       }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
-    }
-  }));
+    }));
+  }
 
   // GitHub OAuth Strategy
   passport.use(new GitHubStrategy({
@@ -172,7 +173,7 @@ export async function setupAuth(app: Express) {
   });
 
   // OAuth Routes
-  
+
   // Google
   app.get('/api/auth/google', (req: Request, res: Response, next: NextFunction) => {
     const redirect = req.query.redirect as string;
@@ -189,15 +190,15 @@ export async function setupAuth(app: Express) {
         const user = req.user as any;
         const redirectPath = (req.session as any)?.authRedirect;
         delete (req.session as any).authRedirect;
-        
+
         if (redirectPath) {
           return res.redirect(redirectPath);
         }
-        
+
         // Determine appropriate dashboard based on user type
         const { storage } = await import('./storage');
         const stakeholderData = await storage.getStakeholderByUserId(user.id);
-        
+
         if (stakeholderData) {
           return res.redirect('/stakeholder');
         } else {
@@ -226,15 +227,15 @@ export async function setupAuth(app: Express) {
         const user = req.user as any;
         const redirectPath = (req.session as any)?.authRedirect;
         delete (req.session as any).authRedirect;
-        
+
         if (redirectPath) {
           return res.redirect(redirectPath);
         }
-        
+
         // Determine appropriate dashboard based on user type
         const { storage } = await import('./storage');
         const stakeholderData = await storage.getStakeholderByUserId(user.id);
-        
+
         if (stakeholderData) {
           return res.redirect('/stakeholder');
         } else {
@@ -287,7 +288,7 @@ export async function setupAuth(app: Express) {
   app.post('/api/auth/register', async (req: Request, res: Response) => {
     try {
       const { email, password, firstName, lastName } = req.body;
-      
+
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: 'User already exists' });
@@ -295,7 +296,7 @@ export async function setupAuth(app: Express) {
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const userId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
+
       const user = await storage.createUser({
         id: userId,
         email,
@@ -321,13 +322,13 @@ export async function setupAuth(app: Express) {
     async (req: Request, res: Response) => {
       try {
         const user = req.user as any;
-        
+
         // Determine appropriate dashboard based on user type
         const { storage } = await import('./storage');
         const stakeholderData = await storage.getStakeholderByUserId(user.id);
-        
+
         const dashboardRoute = stakeholderData ? '/stakeholder' : '/dashboard';
-        
+
         res.json({ 
           user: req.user,
           redirectTo: dashboardRoute
