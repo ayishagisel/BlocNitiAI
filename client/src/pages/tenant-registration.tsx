@@ -81,19 +81,10 @@ export default function TenantRegistration() {
       streetname: "",
       unit: "",
       zip: "",
-      housingType: "private",
-      knowsOrganizer: false,
       organizers: [],
-      threatened: false,
-      evictionCase: false,
-      hasHpProceeding: false,
-      registeredWithNonProfit: false,
       nonProfits: [],
-      receivedCitySupport: false,
       cityAgencies: [],
-      receivedElectedSupport: false,
       electedOfficials: [],
-      atRiskHomelessness: false,
     },
   });
 
@@ -343,7 +334,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        value={field.value}
+                        value={field.value || ""}
                         className="flex flex-col space-y-2"
                       >
                         <div className="flex items-center space-x-2">
