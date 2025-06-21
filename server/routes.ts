@@ -17,7 +17,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const user = req.user;
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -25,29 +26,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Dashboard routing based on user type
-  app.get('/api/auth/dashboard-route', isAuthenticated, async (req: any, res) => {
-    try {
-      const user = req.user;
-      
-      // Check if user has stakeholder data
-      const stakeholderData = await storage.getStakeholderByUserId(user.id);
-      if (stakeholderData) {
-        return res.json({ redirectTo: '/stakeholder' });
-      }
-      
-      // Default to tenant dashboard
-      return res.json({ redirectTo: '/dashboard' });
-    } catch (error) {
-      console.error("Error determining dashboard route:", error);
-      res.status(500).json({ message: "Failed to determine dashboard route" });
-    }
-  });
-
   // User profile routes
   app.put('/api/user/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
       const result = updateUserProfileSchema.safeParse(req.body);
 
       if (!result.success) {
@@ -69,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Repair issues routes
   app.get('/api/repair-issues', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
       const repairIssues = await storage.getRepairIssuesByUserId(userId);
       res.json(repairIssues);
     } catch (error) {
@@ -80,7 +62,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/repair-issues', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
       const result = insertRepairIssueSchema.safeParse(req.body);
 
       if (!result.success) {
@@ -115,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/repair-issues/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
       const repairIssueId = parseInt(req.params.id);
 
       await storage.deleteRepairIssue(repairIssueId, userId);
@@ -129,7 +111,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Harassment reports routes
   app.get('/api/harassment-reports', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
       const reports = await storage.getHarassmentReportsByUserId(userId);
       res.json(reports);
     } catch (error) {
@@ -140,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/harassment-reports', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
       const result = insertHarassmentReportSchema.safeParse(req.body);
 
       if (!result.success) {
@@ -274,7 +256,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  
+  app.get("/api/login", (req, res, next) => {
+    const redirect = req.query.redirect as string;
+    if (redirect) {
+      // Store redirect in session for callback
+      (req.session as any).authRedirect = redirect;
+    }
+
+    passport.authenticate(`replitauth:${req.hostname}`, {
+      prompt: "login consent",
+      scope: ["openid", "email", "profile", "offline_access"],
+    })(req, res, next);
+  });
+
+  app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Session destruction error:', err);
+        return res.status(500).json({ message: 'Failed to logout' });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: 'Logged out successfully' });
+    });
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -2,7 +2,7 @@
 import { User } from "@shared/schema";
 
 export function useProfileCompleteness(user: User | null) {
-  if (!user) return { isComplete: false, missingFields: [], loading: false };
+  if (!user) return { isComplete: false, missingFields: [] };
 
   const requiredFields = [
     'firstName',
@@ -14,8 +14,7 @@ export function useProfileCompleteness(user: User | null) {
     'housingType'
   ];
 
-  // Make boolean fields optional for now - they can be null/undefined
-  const optionalBooleanFields = [
+  const requiredBooleanFields = [
     'knowsOrganizer',
     'threatened',
     'evictionCase',
@@ -35,18 +34,15 @@ export function useProfileCompleteness(user: User | null) {
     }
   });
 
-  // For debugging: log the current state
-  console.log('Profile completeness check:', {
-    user: user.email,
-    missingFields,
-    allFields: requiredFields.map(f => ({ [f]: user[f as keyof User] }))
+  // Check required boolean fields (they should not be null/undefined)
+  requiredBooleanFields.forEach(field => {
+    if (user[field as keyof User] === null || user[field as keyof User] === undefined) {
+      missingFields.push(field);
+    }
   });
 
-  const isComplete = missingFields.length === 0;
-
   return {
-    isComplete,
-    missingFields,
-    loading: false
+    isComplete: missingFields.length === 0,
+    missingFields
   };
 }

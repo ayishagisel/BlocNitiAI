@@ -11,15 +11,11 @@ import {
 
 export default function Landing() {
   const handleLogin = () => {
-    window.location.href = "/login";
+    window.location.href = "/api/login";
   };
 
-  const handleTenantRegistration = () => {
-    window.location.href = "/register/tenant";
-  };
-
-  const handleStakeholderRegistration = () => {
-    window.location.href = "/register/stakeholder";
+  const handleStakeholderLogin = () => {
+    window.location.href = "/api/login?redirect=/stakeholder";
   };
 
   return (
@@ -104,14 +100,14 @@ export default function Landing() {
               intent={Intent.PRIMARY}
               large
               text="Register as Tenant"
-              onClick={handleTenantRegistration}
+              onClick={() => window.location.href = "/register/tenant"}
               style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px" }}
             />
             <Button
               intent={Intent.SUCCESS}
               large
               text="Register as Stakeholder"
-              onClick={handleStakeholderRegistration}
+              onClick={() => window.location.href = "/register/stakeholder"}
               style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px" }}
             />
           </div>
@@ -119,15 +115,22 @@ export default function Landing() {
 
         <div>
           <H3 style={{ marginBottom: "15px", color: "#2c3e50" }}>
-            Existing Users
+            Existing Users - Sign In
           </H3>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
             <Button
-              intent={Intent.PRIMARY}
+              intent={Intent.NONE}
               large
-              text="Sign In"
+              text="Tenant Sign In"
               onClick={handleLogin}
-              style={{ fontSize: "16px", padding: "12px 32px", minWidth: "160px" }}
+              style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px", backgroundColor: "#f8f9fa", border: "2px solid #215db0" }}
+            />
+            <Button
+              intent={Intent.NONE}
+              large
+              text="Stakeholder Sign In"
+              onClick={handleStakeholderLogin}
+              style={{ fontSize: "16px", padding: "12px 24px", minWidth: "160px", backgroundColor: "#f8f9fa", border: "2px solid #28a745" }}
             />
           </div>
         </div>

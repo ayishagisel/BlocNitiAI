@@ -107,7 +107,7 @@ export default function TenantRegistration() {
         title: "Registration Complete",
         description: "Your tenant account has been created successfully.",
       });
-      window.location.href = "/dashboard";
+      window.location.href = "/api/login";
     },
     onError: (error) => {
       toast({

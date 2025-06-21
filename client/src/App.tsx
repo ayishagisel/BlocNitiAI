@@ -19,10 +19,6 @@ import Home from './pages/home';
 import NotFound from './pages/not-found';
 import TenantRegistration from './pages/tenant-registration';
 import StakeholderRegistration from './pages/stakeholder-registration';
-import LoginPage from './pages/login';
-import PrivacyPolicy from "./pages/privacy-policy";
-import TermsOfService from "./pages/terms-of-service";
-import DataDeletion from "./pages/data-deletion";
 
 import { 
   SidebarProvider, 
@@ -97,9 +93,9 @@ function AppSidebar() {
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
-  const { isComplete, loading: profileLoading, missingFields } = useProfileCompleteness(user);
+  const { isComplete } = useProfileCompleteness(user);
 
-  if (isLoading || profileLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -107,18 +103,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // Debug logging
-  console.log('ProtectedRoute check:', {
-    location,
-    isComplete,
-    missingFields,
-    userEmail: user.email
-  });
-
   // If user is authenticated but profile is incomplete, redirect to profile page
   // unless they're already on the profile page
-  if (user && isComplete === false && location !== '/profile') {
-    console.log('Redirecting to profile - missing fields:', missingFields);
+  if (user && !isComplete && location !== '/profile') {
     setLocation('/profile');
     return <div>Redirecting to complete profile...</div>;
   }
@@ -200,17 +187,8 @@ function AppContent() {
   // Check if current route is a registration page
   const isRegistrationPage = location === "/register/tenant" || location === "/register/stakeholder";
 
-  // If it's a registration page and user is not authenticated, redirect to login
-  if (isRegistrationPage && !user) {
-    return (
-      <div className="h-screen w-full">
-        <LoginPage />
-      </div>
-    );
-  }
-
-  // If it's a registration page and user is authenticated, render without sidebar
-  if (isRegistrationPage && user) {
+  // If it's a registration page, render without sidebar (for both authenticated and non-authenticated users)
+  if (isRegistrationPage) {
     return (
       <div className="min-h-screen">
         <Switch>
@@ -228,7 +206,6 @@ function AppContent() {
       <div className="h-screen w-full">
         <Switch>
           <Route path="/" component={LandingPage} />
-          <Route path="/login" component={LoginPage} />
           <Route path="/register" component={UserRegistration} />
           <Route path="*" component={LandingPage} />
         </Switch>
@@ -307,25 +284,6 @@ function AppContent() {
                   </ProtectedRoute>
                 )}
               />
-              <Route
-                path="/tenant-registration"
-                render={() => (
-                  <ProtectedRoute>
-                    <TenantRegistration />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route
-                path="/stakeholder-registration"
-                render={() => (
-                  <ProtectedRoute>
-                    <StakeholderRegistration />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/privacy-policy" component={PrivacyPolicy} />
-              <Route path="/terms-of-service" component={TermsOfService} />
-              <Route path="/data-deletion" component={DataDeletion} />
               <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>

@@ -1,386 +1,167 @@
-import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { Strategy as GitHubStrategy } from 'passport-github2';
-import { Strategy as TwitterStrategy } from 'passport-twitter';
-import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { Strategy as LocalStrategy } from 'passport-local';
-import session from 'express-session';
-import bcrypt from 'bcryptjs';
-import type { Express, Request, Response, NextFunction } from 'express';
-import { storage } from './storage';
+import * as client from "openid-client";
+import { Strategy, type VerifyFunction } from "openid-client/passport";
 
-export async function setupAuth(app: Express) {
-  // Session configuration
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'blocniti-secret-key-2024',
+import passport from "passport";
+import session from "express-session";
+import type { Express, RequestHandler } from "express";
+import memoize from "memoizee";
+import connectPg from "connect-pg-simple";
+import { storage } from "./storage";
+
+if (!process.env.REPLIT_DOMAINS) {
+  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+}
+
+const getOidcConfig = memoize(
+  async () => {
+    return await client.discovery(
+      new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
+      process.env.REPL_ID!
+    );
+  },
+  { maxAge: 3600 * 1000 }
+);
+
+export function getSession() {
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: false,
+    ttl: sessionTtl,
+    tableName: "sessions",
+  });
+  return session({
+    secret: process.env.SESSION_SECRET!,
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
       httpOnly: true,
-      sameSite: 'lax'
-    }
-  }));
+      secure: true,
+      maxAge: sessionTtl,
+    },
+  });
+}
 
+function updateUserSession(
+  user: any,
+  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
+) {
+  user.claims = tokens.claims();
+  user.access_token = tokens.access_token;
+  user.refresh_token = tokens.refresh_token;
+  user.expires_at = user.claims?.exp;
+}
+
+async function upsertUser(
+  claims: any,
+) {
+  await storage.upsertUser({
+    id: claims["sub"],
+    email: claims["email"],
+    firstName: claims["first_name"],
+    lastName: claims["last_name"],
+    profileImageUrl: claims["profile_image_url"],
+  });
+}
+
+export async function setupAuth(app: Express) {
+  app.set("trust proxy", 1);
+  app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Google OAuth Strategy
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    console.error('Missing Google OAuth credentials. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in Secrets.');
+  const config = await getOidcConfig();
+
+  const verify: VerifyFunction = async (
+    tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
+    verified: passport.AuthenticateCallback
+  ) => {
+    const user = {};
+    updateUserSession(user, tokens);
+    await upsertUser(tokens.claims());
+    verified(null, user);
+  };
+
+  for (const domain of process.env
+    .REPLIT_DOMAINS!.split(",")) {
+    const callbackURL = domain === 'localhost' ? `http://${domain}:3000/api/callback` : `https://${domain}/api/callback`; // Adjusted callbackURL
+
+    const strategy = new Strategy(
+      {
+        name: `replitauth:${domain}`,
+        config,
+        scope: "openid email profile offline_access",
+        callbackURL: callbackURL,
+      },
+      verify,
+    );
+    passport.use(strategy);
   }
 
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'your-google-client-secret',
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback"
-    }, async (accessToken, refreshToken, profile, done) => {
-      try {
-        const userInfo = {
-          id: profile.id,
-          email: profile.emails?.[0]?.value || '',
-          firstName: profile.name?.givenName || '',
-          lastName: profile.name?.familyName || '',
-          profileImageUrl: profile.photos?.[0]?.value || ''
-        };
+  passport.serializeUser((user: Express.User, cb) => cb(null, user));
+  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
-        let user = await storage.getUser(profile.id);
-        if (!user) {
-          user = await storage.createUser(userInfo);
-        }
-
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
-      }
-    }));
-  }
-
-  // GitHub OAuth Strategy
-  passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID || 'your-github-client-id',
-    clientSecret: process.env.GITHUB_CLIENT_SECRET || 'your-github-client-secret',
-    callbackURL: "/api/auth/github/callback"
-  }, async (accessToken, refreshToken, profile, done) => {
-    try {
-      const userInfo = {
-        id: profile.id.toString(),
-        email: profile.emails?.[0]?.value || '',
-        firstName: profile.displayName?.split(' ')[0] || profile.username || '',
-        lastName: profile.displayName?.split(' ').slice(1).join(' ') || '',
-        profileImageUrl: profile.photos?.[0]?.value || ''
-      };
-
-      let user = await storage.getUser(profile.id.toString());
-      if (!user) {
-        user = await storage.createUser(userInfo);
-      }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
-    }
-  }));
-
-  // Twitter OAuth Strategy
-  passport.use(new TwitterStrategy({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY || 'your-twitter-consumer-key',
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET || 'your-twitter-consumer-secret',
-    callbackURL: "/api/auth/twitter/callback"
-  }, async (token, tokenSecret, profile, done) => {
-    try {
-      const userInfo = {
-        id: profile.id,
-        email: profile.emails?.[0]?.value || '',
-        firstName: profile.displayName?.split(' ')[0] || profile.username || '',
-        lastName: profile.displayName?.split(' ').slice(1).join(' ') || '',
-        profileImageUrl: profile.photos?.[0]?.value || ''
-      };
-
-      let user = await storage.getUser(profile.id);
-      if (!user) {
-        user = await storage.createUser(userInfo);
-      }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
-    }
-  }));
-
-  // Facebook OAuth Strategy
-  passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_APP_ID || 'your-facebook-app-id',
-    clientSecret: process.env.FACEBOOK_APP_SECRET || 'your-facebook-app-secret',
-    callbackURL: "/api/auth/facebook/callback",
-    profileFields: ['id', 'emails', 'name', 'photos']
-  }, async (accessToken, refreshToken, profile, done) => {
-    try {
-      const userInfo = {
-        id: profile.id,
-        email: profile.emails?.[0]?.value || '',
-        firstName: profile.name?.givenName || '',
-        lastName: profile.name?.familyName || '',
-        profileImageUrl: profile.photos?.[0]?.value || ''
-      };
-
-      let user = await storage.getUser(profile.id);
-      if (!user) {
-        user = await storage.createUser(userInfo);
-      }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
-    }
-  }));
-
-  // Local Strategy for email/password
-  passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
-  }, async (email, password, done) => {
-    try {
-      const user = await storage.getUserByEmail(email);
-      if (!user || !user.password) {
-        return done(null, false, { message: 'Invalid email or password' });
-      }
-
-      const isValid = await bcrypt.compare(password, user.password);
-      if (!isValid) {
-        return done(null, false, { message: 'Invalid email or password' });
-      }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
-    }
-  }));
-
-  passport.serializeUser((user: any, done) => {
-    done(null, user.id);
+  app.get("/api/login", (req, res, next) => {
+    passport.authenticate(`replitauth:${req.hostname}`, {
+      prompt: "login consent",
+      scope: ["openid", "email", "profile", "offline_access"],
+    })(req, res, next);
   });
 
-  passport.deserializeUser(async (id: string, done) => {
-    try {
-      const user = await storage.getUser(id);
-      done(null, user);
-    } catch (error) {
-      done(error, null);
-    }
-  });
-
-  // OAuth Routes
-
-  // Google
-  app.get('/api/auth/google', (req: Request, res: Response, next: NextFunction) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      (req.session as any).authRedirect = redirect;
-    }
-    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
-  });
-
-  app.get('/api/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    async (req: Request, res: Response) => {
-      try {
-        const user = req.user as any;
-        const redirectPath = (req.session as any)?.authRedirect;
-        delete (req.session as any).authRedirect;
-
-        if (redirectPath) {
-          return res.redirect(redirectPath);
-        }
-
-        // Determine appropriate dashboard based on user type
-        const { storage } = await import('./storage');
-        const stakeholderData = await storage.getStakeholderByUserId(user.id);
-
-        if (stakeholderData) {
-          return res.redirect('/stakeholder');
-        } else {
-          return res.redirect('/dashboard');
-        }
-      } catch (error) {
-        console.error('Error in OAuth callback:', error);
-        res.redirect('/dashboard');
-      }
-    }
-  );
-
-  // GitHub
-  app.get('/api/auth/github', (req: Request, res: Response, next: NextFunction) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      (req.session as any).authRedirect = redirect;
-    }
-    passport.authenticate('github', { scope: ['user:email'] })(req, res, next);
-  });
-
-  app.get('/api/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/login' }),
-    async (req: Request, res: Response) => {
-      try {
-        const user = req.user as any;
-        const redirectPath = (req.session as any)?.authRedirect;
-        delete (req.session as any).authRedirect;
-
-        if (redirectPath) {
-          return res.redirect(redirectPath);
-        }
-
-        // Determine appropriate dashboard based on user type
-        const { storage } = await import('./storage');
-        const stakeholderData = await storage.getStakeholderByUserId(user.id);
-
-        if (stakeholderData) {
-          return res.redirect('/stakeholder');
-        } else {
-          return res.redirect('/dashboard');
-        }
-      } catch (error) {
-        console.error('Error in OAuth callback:', error);
-        res.redirect('/dashboard');
-      }
-    }
-  );
-
-  // Twitter
-  app.get('/api/auth/twitter', (req: Request, res: Response, next: NextFunction) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      (req.session as any).authRedirect = redirect;
-    }
-    passport.authenticate('twitter')(req, res, next);
-  });
-
-  app.get('/api/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: '/login' }),
-    (req: Request, res: Response) => {
-      const redirectPath = (req.session as any)?.authRedirect || '/dashboard';
+  app.get("/api/callback", (req, res, next) => {
+    const redirect = (req.session as any)?.authRedirect;
+    const successRedirect = redirect || "/dashboard";
+    
+    // Clear the redirect from session
+    if ((req.session as any)?.authRedirect) {
       delete (req.session as any).authRedirect;
-      res.redirect(redirectPath);
     }
-  );
-
-  // Facebook
-  app.get('/api/auth/facebook', (req: Request, res: Response, next: NextFunction) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      (req.session as any).authRedirect = redirect;
-    }
-    passport.authenticate('facebook', { scope: ['email'] })(req, res, next);
+    
+    passport.authenticate(`replitauth:${req.hostname}`, {
+      successReturnToOrRedirect: successRedirect,
+      failureRedirect: "/",
+    })(req, res, next);
   });
 
-  app.get('/api/auth/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/login' }),
-    (req: Request, res: Response) => {
-      const redirectPath = (req.session as any)?.authRedirect || '/dashboard';
-      delete (req.session as any).authRedirect;
-      res.redirect(redirectPath);
-    }
-  );
-
-  // Local email/password registration and login
-  app.post('/api/auth/register', async (req: Request, res: Response) => {
-    try {
-      const { email, password, firstName, lastName } = req.body;
-
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ message: 'User already exists' });
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const userId = `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      const user = await storage.createUser({
-        id: userId,
-        email,
-        firstName,
-        lastName,
-        password: hashedPassword
-      });
-
-      req.login(user, (err) => {
-        if (err) {
-          return res.status(500).json({ message: 'Login failed after registration' });
-        }
-        res.json({ user });
-      });
-    } catch (error) {
-      console.error('Registration error:', error);
-      res.status(500).json({ message: 'Registration failed' });
-    }
-  });
-
-  app.post('/api/auth/login',
-    passport.authenticate('local'),
-    async (req: Request, res: Response) => {
-      try {
-        const user = req.user as any;
-
-        // Determine appropriate dashboard based on user type
-        const { storage } = await import('./storage');
-        const stakeholderData = await storage.getStakeholderByUserId(user.id);
-
-        const dashboardRoute = stakeholderData ? '/stakeholder' : '/dashboard';
-
-        res.json({ 
-          user: req.user,
-          redirectTo: dashboardRoute
-        });
-      } catch (error) {
-        console.error('Error determining dashboard route:', error);
-        res.json({ 
-          user: req.user,
-          redirectTo: '/dashboard'
-        });
-      }
-    }
-  );
-
-  // User status endpoint for auth checking
-  app.get('/api/auth/user', (req: Request, res: Response) => {
-    if (req.isAuthenticated()) {
-      res.json(req.user);
-    } else {
-      res.status(401).json({ message: 'Not authenticated' });
-    }
-  });
-
-  // Legacy login endpoint for backwards compatibility
-  app.get('/api/login', (req: Request, res: Response) => {
-    const redirect = req.query.redirect as string;
-    if (redirect) {
-      (req.session as any).authRedirect = redirect;
-    }
-    res.redirect('/#/login');
-  });
-
-  app.post('/api/auth/logout', (req: Request, res: Response) => {
-    req.logout((err) => {
-      if (err) {
-        console.error('Logout error:', err);
-        return res.status(500).json({ message: 'Logout failed' });
-      }
-      req.session.destroy((sessionErr) => {
-        if (sessionErr) {
-          console.error('Session destroy error:', sessionErr);
-        }
-        res.clearCookie('connect.sid');
-        res.json({ message: 'Logged out successfully' });
-      });
+  app.get("/api/logout", (req, res) => {
+    req.logout(() => {
+      res.redirect(
+        client.buildEndSessionUrl(config, {
+          client_id: process.env.REPL_ID!,
+          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+        }).href
+      );
     });
   });
 }
 
-export function isAuthenticated(req: any, res: Response, next: NextFunction) {
-  if (req.isAuthenticated()) {
+export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  const user = req.user as any;
+
+  if (!req.isAuthenticated() || !user.expires_at) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  if (now <= user.expires_at) {
     return next();
   }
-  res.status(401).json({ message: 'Unauthorized' });
-}
+
+  const refreshToken = user.refresh_token;
+  if (!refreshToken) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  try {
+    const config = await getOidcConfig();
+    const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
+    updateUserSession(user, tokenResponse);
+    return next();
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+};

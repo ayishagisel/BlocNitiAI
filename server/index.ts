@@ -37,7 +37,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Session configuration is handled in setupAuth
+// Add session configuration here
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  },
+  name: 'blocniti.sid'
+}));
 
 
 (async () => {
@@ -64,7 +75,11 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  server.listen(port, "0.0.0.0", () => {
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
     log(`serving on port ${port}`);
   });
 })();
