@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -51,6 +52,7 @@ export default function UserRegistration() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -135,6 +137,11 @@ export default function UserRegistration() {
         description: "Your registration information has been saved successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      
+      // Redirect to dashboard after successful profile update
+      setTimeout(() => {
+        setLocation('/dashboard');
+      }, 1500); // Give time for the toast to be visible
     },
     onError: (error) => {
       toast({
