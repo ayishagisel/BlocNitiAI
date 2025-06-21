@@ -755,7 +755,7 @@ export default function UserRegistration() {
             <div className="flex justify-end">
               <Button 
                 type="submit" 
-                className="bg-primary hover:bg-blue-700"
+                className="bg-blue-500 hover:bg-blue-600 text-white"
                 disabled={updateProfileMutation.isPending}
               >
                 <i className="fas fa-save mr-2"></i>
