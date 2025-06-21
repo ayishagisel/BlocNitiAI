@@ -173,15 +173,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     streetname: z.string().min(1, "Street name is required"),
     unit: z.string().min(1, "Unit number is required"),
     zip: z.string().min(5, "ZIP code is required").max(10, "Invalid ZIP code"),
+    housingType: z.enum(["rent_stabilized", "rent_controlled", "nycha", "private"]),
     knowsOrganizer: z.boolean(),
+    organizers: z.array(z.object({
+      name: z.string().min(1, "Name is required"),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+      company: z.string().optional(),
+    })).optional(),
     threatened: z.boolean(),
     evictionCase: z.boolean(),
-    hasTenantLeader: z.boolean(),
+    hasHpProceeding: z.boolean(),
     registeredWithNonProfit: z.boolean(),
+    nonProfits: z.array(z.object({
+      name: z.string().min(1, "Organization name is required"),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+    })).optional(),
     receivedCitySupport: z.boolean(),
+    cityAgencies: z.array(z.object({
+      name: z.string().min(1, "Agency name is required"),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+    })).optional(),
     receivedElectedSupport: z.boolean(),
+    electedOfficials: z.array(z.object({
+      title: z.string().min(1, "Title is required"),
+      firstName: z.string().min(1, "First name is required"),
+      lastName: z.string().min(1, "Last name is required"),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+    })).optional(),
     atRiskHomelessness: z.boolean(),
-    housingType: z.enum(["rent_stabilized", "rent_controlled", "nycha", "private"]),
   });
 
   const stakeholderRegistrationSchema = z.object({

@@ -385,7 +385,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -510,7 +510,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -539,7 +539,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -568,7 +568,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -597,7 +597,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -709,7 +709,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -821,7 +821,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -855,7 +855,7 @@ export default function TenantRegistration() {
                   </div>
                   {electedOfficialsFieldArray.fields.map((field, index) => (
                     <div key={field.id} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4 border border-gray-200 rounded-lg">
-                      
+
                       <FormField
                         control={form.control}
                         name={`electedOfficials.${index}.title`}
@@ -923,7 +923,7 @@ export default function TenantRegistration() {
                       />
                     </div>
                   ))}
-                  {electedOfficialsFieldArray.fields.length === 0 && (
+                  {electedOfficialsFieldArray.fields.length === 0 &&(
                     <Button
                       type="button"
                       variant="outline"
@@ -947,7 +947,7 @@ export default function TenantRegistration() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
+                        value={field.value === undefined ? "" : field.value ? "true" : "false"}
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
