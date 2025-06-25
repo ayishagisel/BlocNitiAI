@@ -45,43 +45,35 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 function AppSidebar() {
+  const [, setLocation] = useLocation();
+  
   return (
     <Sidebar className="border-r border-gray-200">
       <SidebarContent className="pt-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/home">
-                <span>Dashboard</span>
-              </a>
+            <SidebarMenuButton onClick={() => setLocation('/home')}>
+              <span>Dashboard</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/repair-reports">
-                <span>Repair Reports</span>
-              </a>
+            <SidebarMenuButton onClick={() => setLocation('/repair-reports')}>
+              <span>Repair Reports</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/legal-dashboard">
-                <span>Legal Dashboard</span>
-              </a>
+            <SidebarMenuButton onClick={() => setLocation('/legal-dashboard')}>
+              <span>Legal Dashboard</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/harassment-reports">
-                <span>Harassment Reports</span>
-              </a>
+            <SidebarMenuButton onClick={() => setLocation('/harassment-reports')}>
+              <span>Harassment Reports</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/stakeholder">
-                <span>Analytics</span>
-              </a>
+            <SidebarMenuButton onClick={() => setLocation('/stakeholder')}>
+              <span>Analytics</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -103,12 +95,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // If user is authenticated but profile is incomplete, redirect to profile page
-  // unless they're already on the profile page
-  if (user && !isComplete && location !== '/profile') {
-    setLocation('/profile');
-    return <div>Redirecting to complete profile...</div>;
-  }
+  // Allow access to all routes for authenticated users
+  // Profile completion is encouraged but not required for navigation
 
   return <>{children}</>;
 }
@@ -242,48 +230,13 @@ function AppContent() {
           <div className="flex-1 overflow-auto p-6">
             <ProfileIncompleteBanner />
             <Switch>
-              <Route path="/home" component={() => (
-                  <ProtectedRoute>
-                    <TenantDashboard />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/dashboard" component={() => (
-                  <ProtectedRoute>
-                    <TenantDashboard />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/repair-reports" component={() => (
-                  <ProtectedRoute>
-                    <RepairReports />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/legal-dashboard" component={() => (
-                  <ProtectedRoute>
-                    <LegalDashboard />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/harassment-reports" component={() => (
-                  <ProtectedRoute>
-                    <HarassmentReporting />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/stakeholder" component={() => (
-                  <ProtectedRoute>
-                    <StakeholderDashboard />
-                  </ProtectedRoute>
-                )}
-              />
-              <Route path="/profile" component={() => (
-                  <ProtectedRoute>
-                    <UserRegistration />
-                  </ProtectedRoute>
-                )}
-              />
+              <Route path="/home" component={TenantDashboard} />
+              <Route path="/dashboard" component={TenantDashboard} />
+              <Route path="/repair-reports" component={RepairReports} />
+              <Route path="/legal-dashboard" component={LegalDashboard} />
+              <Route path="/harassment-reports" component={HarassmentReporting} />
+              <Route path="/stakeholder" component={StakeholderDashboard} />
+              <Route path="/profile" component={UserRegistration} />
               <Route path="*" component={TenantDashboard} />
             </Switch>
           </div>
