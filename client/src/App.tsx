@@ -125,10 +125,10 @@ function UserProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative h-12 w-12 rounded-full">
+          <Avatar className="h-12 w-12">
             <AvatarImage src={user.profileImageUrl} alt={user.firstName} />
-            <AvatarFallback>{initials}</AvatarFallback>
+            <AvatarFallback className="text-lg font-semibold">{initials}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -211,14 +211,14 @@ function AppContent() {
     <SidebarProvider>
       <div className="flex h-screen w-full">
         {/* Fixed Header with Logo and Toggle */}
-        <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between h-full px-4">
+        <div className="fixed top-0 left-0 right-0 z-50 h-20 bg-white border-b border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between h-full px-6">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="h-8 w-8" />
               <img 
                 src="/BlocNiti-LogoNB_1749709973044.png" 
                 alt="BlocNiti AI" 
-                className="h-12 w-auto"
+                className="h-16 w-auto"
               />
             </div>
             <UserProfileDropdown />
@@ -226,7 +226,7 @@ function AppContent() {
         </div>
 
         <AppSidebar />
-        <SidebarInset className="flex-1 mt-16">
+        <SidebarInset className="flex-1 mt-20">
           <div className="flex-1 overflow-auto p-6">
             <ProfileIncompleteBanner />
             <Switch>

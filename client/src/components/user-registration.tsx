@@ -313,7 +313,7 @@ export default function UserRegistration() {
             {/* Legal Context Questions */}
             <div className="space-y-6 bg-gray-50 p-6 rounded-lg">
               <h4 className="text-lg font-medium text-gray-900">Legal Context Assessment</h4>
-              
+
               <FormField
                 control={form.control}
                 name="knowsOrganizer"
