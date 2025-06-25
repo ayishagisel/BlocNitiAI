@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -51,6 +51,7 @@ export default function UserRegistration() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -172,7 +173,7 @@ export default function UserRegistration() {
                   <FormItem>
                     <FormLabel>First Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -185,7 +186,7 @@ export default function UserRegistration() {
                   <FormItem>
                     <FormLabel>Middle Name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -198,7 +199,7 @@ export default function UserRegistration() {
                   <FormItem>
                     <FormLabel>Last Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -214,7 +215,7 @@ export default function UserRegistration() {
                   <FormItem>
                     <FormLabel>Date of Birth *</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type="date" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -227,7 +228,7 @@ export default function UserRegistration() {
                   <FormItem>
                     <FormLabel>Phone *</FormLabel>
                     <FormControl>
-                      <Input placeholder="(555) 123-4567" {...field} />
+                      <Input placeholder="(555) 123-4567" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -247,7 +248,7 @@ export default function UserRegistration() {
                       <FormItem>
                         <FormLabel>Street Address *</FormLabel>
                         <FormControl>
-                          <Input placeholder="123 Main Street" {...field} />
+                          <Input placeholder="123 Main Street" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -262,7 +263,7 @@ export default function UserRegistration() {
                       <FormItem>
                         <FormLabel>Unit Number *</FormLabel>
                         <FormControl>
-                          <Input placeholder="Apt 1A" {...field} />
+                          <Input placeholder="Apt 1A" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -287,19 +288,19 @@ export default function UserRegistration() {
                         className="flex flex-col space-y-2"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="rent_stabilized" id="rent-stabilized" />
+                          <RadioGroupItem value="rent_stabilized" id="rent-stabilized" disabled={!isEditMode} />
                           <Label htmlFor="rent-stabilized">Rent Stabilized</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="rent_controlled" id="rent-controlled" />
+                          <RadioGroupItem value="rent_controlled" id="rent-controlled" disabled={!isEditMode}/>
                           <Label htmlFor="rent-controlled">Rent Controlled</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="nycha" id="nycha" />
+                          <RadioGroupItem value="nycha" id="nycha" disabled={!isEditMode}/>
                           <Label htmlFor="nycha">NYCHA (Public Housing)</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="private" id="private" />
+                          <RadioGroupItem value="private" id="private" disabled={!isEditMode}/>
                           <Label htmlFor="private">Private Housing</Label>
                         </div>
                       </RadioGroup>
@@ -327,13 +328,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="organizer-yes" />
+                          <RadioGroupItem value="true" id="organizer-yes" disabled={!isEditMode}/>
                           <Label htmlFor="organizer-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="organizer-no" />
+                          <RadioGroupItem value="false" id="organizer-no" disabled={!isEditMode}/>
                           <Label htmlFor="organizer-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -355,7 +357,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Organizer name" {...field} />
+                            <Input placeholder="Organizer name" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -368,7 +370,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Company/Organization</FormLabel>
                           <FormControl>
-                            <Input placeholder="Organization name" {...field} />
+                            <Input placeholder="Organization name" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -381,7 +383,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Phone</FormLabel>
                           <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
+                            <Input placeholder="(555) 123-4567" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -394,7 +396,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="organizer@example.com" {...field} />
+                            <Input placeholder="organizer@example.com" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -417,13 +419,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="threatened-yes" />
+                          <RadioGroupItem value="true" id="threatened-yes" disabled={!isEditMode}/>
                           <Label htmlFor="threatened-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="threatened-no" />
+                          <RadioGroupItem value="false" id="threatened-no" disabled={!isEditMode}/>
                           <Label htmlFor="threatened-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -446,13 +449,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="eviction-yes" />
+                          <RadioGroupItem value="true" id="eviction-yes" disabled={!isEditMode}/>
                           <Label htmlFor="eviction-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="eviction-no" />
+                          <RadioGroupItem value="false" id="eviction-no" disabled={!isEditMode}/>
                           <Label htmlFor="eviction-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -475,13 +479,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="hp-proceeding-yes" />
+                          <RadioGroupItem value="true" id="hp-proceeding-yes" disabled={!isEditMode}/>
                           <Label htmlFor="hp-proceeding-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="hp-proceeding-no" />
+                          <RadioGroupItem value="false" id="hp-proceeding-no" disabled={!isEditMode}/>
                           <Label htmlFor="hp-proceeding-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -504,13 +509,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="nonprofit-yes" />
+                          <RadioGroupItem value="true" id="nonprofit-yes" disabled={!isEditMode}/>
                           <Label htmlFor="nonprofit-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="nonprofit-no" />
+                          <RadioGroupItem value="false" id="nonprofit-no" disabled={!isEditMode}/>
                           <Label htmlFor="nonprofit-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -532,7 +538,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Organization Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Legal Aid Society" {...field} />
+                            <Input placeholder="Legal Aid Society" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -545,7 +551,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Phone</FormLabel>
                           <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
+                            <Input placeholder="(555) 123-4567" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -558,7 +564,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="contact@nonprofit.org" {...field} />
+                            <Input placeholder="contact@nonprofit.org" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -581,13 +587,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="city-support-yes" />
+                          <RadioGroupItem value="true" id="city-support-yes" disabled={!isEditMode}/>
                           <Label htmlFor="city-support-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="city-support-no" />
+                          <RadioGroupItem value="false" id="city-support-no" disabled={!isEditMode}/>
                           <Label htmlFor="city-support-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -609,7 +616,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Agency Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="HPD, NYCHA, etc." {...field} />
+                            <Input placeholder="HPD, NYCHA, etc." {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -622,7 +629,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Phone</FormLabel>
                           <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
+                            <Input placeholder="(555) 123-4567" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -635,7 +642,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="contact@agency.nyc.gov" {...field} />
+                            <Input placeholder="contact@agency.nyc.gov" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -658,13 +665,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="elected-support-yes" />
+                          <RadioGroupItem value="true" id="elected-support-yes" disabled={!isEditMode}/>
                           <Label htmlFor="elected-support-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="elected-support-no" />
+                          <RadioGroupItem value="false" id="elected-support-no" disabled={!isEditMode}/>
                           <Label htmlFor="elected-support-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -686,7 +694,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Official Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Council Member, Senator, etc." {...field} />
+                            <Input placeholder="Council Member, Senator, etc." {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -699,7 +707,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Phone</FormLabel>
                           <FormControl>
-                            <Input placeholder="(555) 123-4567" {...field} />
+                            <Input placeholder="(555) 123-4567" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -712,7 +720,7 @@ export default function UserRegistration() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="office@official.gov" {...field} />
+                            <Input placeholder="office@official.gov" {...field} readOnly={!isEditMode} className={!isEditMode ? "bg-gray-50" : ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -735,13 +743,14 @@ export default function UserRegistration() {
                         onValueChange={(value) => field.onChange(value === "true")}
                         value={field.value ? "true" : "false"}
                         className="flex space-x-4"
+                        disabled={!isEditMode}
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="true" id="homelessness-yes" />
+                          <RadioGroupItem value="true" id="homelessness-yes" disabled={!isEditMode}/>
                           <Label htmlFor="homelessness-yes">Yes</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="false" id="homelessness-no" />
+                          <RadioGroupItem value="false" id="homelessness-no" disabled={!isEditMode}/>
                           <Label htmlFor="homelessness-no">No</Label>
                         </div>
                       </RadioGroup>
@@ -753,14 +762,25 @@ export default function UserRegistration() {
             </div>
 
             <div className="flex justify-end">
-              <Button 
-                type="submit" 
-                className="bg-primary hover:bg-blue-700"
-                disabled={updateProfileMutation.isPending}
-              >
-                <i className="fas fa-save mr-2"></i>
-                {updateProfileMutation.isPending ? "Saving..." : "Save Registration"}
-              </Button>
+              {isEditMode ? (
+                <Button
+                  type="submit"
+                  className="bg-primary hover:bg-blue-700"
+                  disabled={updateProfileMutation.isPending}
+                >
+                  <i className="fas fa-save mr-2"></i>
+                  {updateProfileMutation.isPending ? "Saving..." : "Save Registration"}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  className="bg-secondary hover:bg-gray-300 text-gray-900"
+                  onClick={() => setIsEditMode(true)}
+                >
+                  <i className="fas fa-edit mr-2"></i>
+                  Edit Profile
+                </Button>
+              )}
             </div>
           </form>
         </Form>
@@ -768,3 +788,4 @@ export default function UserRegistration() {
     </Card>
   );
 }
+```

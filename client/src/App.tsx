@@ -132,7 +132,7 @@ function UserProfileDropdown() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-56 bg-white border border-gray-300 shadow-lg" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.firstName} {user.lastName}</p>
@@ -144,7 +144,7 @@ function UserProfileDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleEditProfile}>
           <i className="fas fa-user mr-2 h-4 w-4"></i>
-          <span>Edit Profile</span>
+          <span>View Profile</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
