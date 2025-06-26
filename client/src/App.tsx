@@ -46,7 +46,7 @@ import { Button } from "@/components/ui/button";
 
 function AppSidebar() {
   const [, setLocation] = useLocation();
-  
+
   return (
     <Sidebar className="border-r border-gray-200">
       <SidebarContent className="pt-4">
