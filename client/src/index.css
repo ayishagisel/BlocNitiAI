@@ -257,31 +257,36 @@ body {
 
 /* Button Group Styling */
 .bp4-button-group .bp4-button {
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  padding: 0.75rem 1.25rem !important;
-  border-radius: 8px !important;
-  margin: 0 2px !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 2px solid transparent !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  padding: 1rem 1.75rem !important;
+  border-radius: 12px !important;
+  margin: 0 4px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 2px solid rgba(23, 126, 188, 0.3) !important;
   color: var(--text-primary) !important;
   transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  min-height: 48px !important;
 }
 
 .bp4-button-group .bp4-button:hover {
-  background: rgba(23, 126, 188, 0.2) !important;
+  background: rgba(23, 126, 188, 0.25) !important;
   border-color: var(--cyan-cornflower) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 8px rgba(23, 126, 188, 0.3) !important;
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 6px 16px rgba(23, 126, 188, 0.4) !important;
+  font-weight: 800 !important;
 }
 
 .bp4-button-group .bp4-button.bp4-active {
   background: linear-gradient(135deg, var(--cyan-cornflower) 0%, #1a8fd4 100%) !important;
   color: white !important;
   border-color: var(--cyan-cornflower) !important;
-  font-weight: 700 !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 6px 12px rgba(23, 126, 188, 0.4) !important;
+  font-weight: 900 !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 8px 20px rgba(23, 126, 188, 0.5) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
 }
 
 .bp4-card {
@@ -304,20 +309,25 @@ body {
 }
 
 .bp4-drawer .bp4-menu-item {
-  color: rgba(255, 255, 255, 0.9) !important;
-  font-size: 1.3rem !important;
-  font-weight: 700 !important;
-  padding: 1rem 1.5rem !important;
-  border-radius: 8px !important;
-  margin: 0.25rem 0.5rem !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  padding: 1.25rem 2rem !important;
+  border-radius: 12px !important;
+  margin: 0.5rem 1rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border: 2px solid transparent !important;
 }
 
 .bp4-drawer .bp4-menu-item:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
   color: var(--mustard) !important;
-  font-weight: 800 !important;
-  transform: translateX(4px) !important;
+  font-weight: 900 !important;
+  transform: translateX(6px) scale(1.02) !important;
   transition: all 0.2s ease !important;
+  border-color: var(--mustard) !important;
+  box-shadow: 0 4px 12px rgba(255, 222, 89, 0.3) !important;
 }
 
 /* Responsive utilities */
