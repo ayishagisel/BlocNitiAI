@@ -58,7 +58,7 @@ function AppSidebar() {
           <img 
             src="/dashboard-logo.png" 
             alt="BlocNiti Dashboard" 
-            className="h-16 w-auto mx-auto"
+            className="h-24 w-auto mx-auto"
           />
         </div>
       </SidebarHeader>

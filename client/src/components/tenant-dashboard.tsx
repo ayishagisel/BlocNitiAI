@@ -96,7 +96,7 @@ export default function TenantDashboard() {
               <img 
                 src="/dashboard-logo.png" 
                 alt="BlocNiti Dashboard" 
-                className="h-16 w-auto"
+                className="h-24 w-auto"
               />
             </div>
             <div className={`transition-all duration-300 ease-in-out ${open ? '-translate-x-6' : 'translate-x-0'}`}>
