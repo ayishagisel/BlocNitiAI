@@ -483,3 +483,16 @@ body {
   color: var(--text-secondary);
 }
 
+/* Universal button override for dashboard container - most specific */
+.dashboard-container .dashboard-header .bp4-button-group * {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+}
+
+.dashboard-container .dashboard-header button,
+.dashboard-container .dashboard-header [role="button"] {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  min-height: 80px !important;
+  padding: 1.5rem 2rem !important;
+}
