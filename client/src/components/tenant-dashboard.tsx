@@ -113,7 +113,6 @@ export default function TenantDashboard() {
                   key={level.id}
                   active={activeLevel === level.id}
                   onClick={() => setActiveLevel(level.id)}
-                  small
                 >
                   {level.name}
                 </Button>
