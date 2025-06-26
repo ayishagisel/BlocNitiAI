@@ -106,7 +106,7 @@ export default function TenantDashboard() {
               <p className="dashboard-subtitle">{currentLevel?.description}</p>
             </div>
           </div>
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
             <ButtonGroup>
               {dashboardLevels.map(level => (
                 <Button

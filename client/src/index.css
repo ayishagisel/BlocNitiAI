@@ -257,20 +257,19 @@ body {
 
 /* Button Group Styling */
 .bp4-button-group .bp4-button {
-  font-size: 2.5rem !important;
+  font-size: 3rem !important;
   font-weight: 800 !important;
-  padding: 2rem 3rem !important;
+  padding: 2.5rem 4rem !important;
   border-radius: 15px !important;
-  margin: 0 6px !important;
+  margin: 0 8px !important;
   background: rgba(255, 255, 255, 0.15) !important;
   border: 2px solid rgba(23, 126, 188, 0.3) !important;
   color: var(--text-primary) !important;
   transition: all 0.3s ease !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
-  min-height: 100px !important;
+  min-height: 120px !important;
   line-height: 1.1 !important;
-  flex: 1 !important;
 }
 
 .bp4-button-group .bp4-button:hover {
@@ -377,10 +376,8 @@ body {
 /* Button Group Container Styling */
 .bp4-button-group {
   display: flex !important;
-  width: 100% !important;
-  max-width: 1200px !important;
-  gap: 8px !important;
-  justify-content: stretch !important;
+  gap: 10px !important;
+  justify-content: flex-end !important;
 }
 
 .dashboard-title {
