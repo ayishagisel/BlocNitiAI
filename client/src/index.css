@@ -336,10 +336,20 @@ body {
   font-weight: 700 !important;
   color: #2C2557 !important;
   font-family: 'Inter', sans-serif !important;
+  margin-bottom: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 8px !important;
 }
 
 [data-sidebar="menu-button"]:hover {
   color: #177EBC !important;
+  font-weight: 800 !important;
+  background-color: rgba(23, 126, 188, 0.1) !important;
+}
+
+[data-sidebar="menu-button"][data-active="true"] {
+  background-color: #177EBC !important;
+  color: white !important;
   font-weight: 800 !important;
 }
 
@@ -347,6 +357,11 @@ body {
   font-size: 1.1rem !important;
   font-weight: inherit !important;
   color: inherit !important;
+}
+
+/* Add spacing between sidebar menu items */
+[data-sidebar="menu-item"] {
+  margin-bottom: 0.25rem !important;
 }
 
 /* Responsive utilities */

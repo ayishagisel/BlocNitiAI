@@ -48,7 +48,15 @@ import { Button } from "@/components/ui/button";
 
 function AppSidebar() {
   const [, setLocation] = useLocation();
+  const [location] = useLocation();
   const { open } = useSidebar();
+
+  const isActive = (path: string) => {
+    if (path === '/home') {
+      return location === '/home' || location === '/dashboard' || location === '/';
+    }
+    return location === path;
+  };
 
   return (
     <Sidebar className="border-r border-gray-200">
@@ -65,27 +73,47 @@ function AppSidebar() {
       <SidebarContent className="pt-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/home')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
+            <SidebarMenuButton 
+              onClick={() => setLocation('/home')} 
+              className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]"
+              isActive={isActive('/home')}
+            >
               <span>Dashboard</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/repair-reports')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
+            <SidebarMenuButton 
+              onClick={() => setLocation('/repair-reports')} 
+              className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]"
+              isActive={isActive('/repair-reports')}
+            >
               <span>Repair Reports</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/legal-dashboard')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
+            <SidebarMenuButton 
+              onClick={() => setLocation('/legal-dashboard')} 
+              className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]"
+              isActive={isActive('/legal-dashboard')}
+            >
               <span>Legal Dashboard</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/harassment-reports')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
+            <SidebarMenuButton 
+              onClick={() => setLocation('/harassment-reports')} 
+              className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]"
+              isActive={isActive('/harassment-reports')}
+            >
               <span>Harassment Reports</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/stakeholder')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
+            <SidebarMenuButton 
+              onClick={() => setLocation('/stakeholder')} 
+              className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]"
+              isActive={isActive('/stakeholder')}
+            >
               <span>Analytics</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
