@@ -330,6 +330,25 @@ body {
   box-shadow: 0 4px 12px rgba(255, 222, 89, 0.3) !important;
 }
 
+/* Custom Sidebar Menu Button Styling */
+[data-sidebar="menu-button"] {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #2C2557 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+[data-sidebar="menu-button"]:hover {
+  color: #177EBC !important;
+  font-weight: 800 !important;
+}
+
+[data-sidebar="menu-button"] span {
+  font-size: 1.1rem !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
 /* Responsive utilities */
 .dashboard-header {
   display: flex;

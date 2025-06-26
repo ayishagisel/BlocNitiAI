@@ -65,27 +65,27 @@ function AppSidebar() {
       <SidebarContent className="pt-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/home')}>
+            <SidebarMenuButton onClick={() => setLocation('/home')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
               <span>Dashboard</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/repair-reports')}>
+            <SidebarMenuButton onClick={() => setLocation('/repair-reports')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
               <span>Repair Reports</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/legal-dashboard')}>
+            <SidebarMenuButton onClick={() => setLocation('/legal-dashboard')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
               <span>Legal Dashboard</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/harassment-reports')}>
+            <SidebarMenuButton onClick={() => setLocation('/harassment-reports')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
               <span>Harassment Reports</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setLocation('/stakeholder')}>
+            <SidebarMenuButton onClick={() => setLocation('/stakeholder')} className="text-lg font-bold text-[#2C2557] hover:text-[#177EBC]">
               <span>Analytics</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
