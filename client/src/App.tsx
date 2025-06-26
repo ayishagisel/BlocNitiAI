@@ -56,8 +56,8 @@ function AppSidebar() {
       <SidebarHeader className="p-4">
         <div className={`transition-all duration-300 ease-in-out ${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
           <img 
-            src="/BlocNiti-LogoNB_1749709973044.png" 
-            alt="BlocNiti AI" 
+            src="/dashboard-logo.png" 
+            alt="BlocNiti Dashboard" 
             className="h-16 w-auto mx-auto"
           />
         </div>

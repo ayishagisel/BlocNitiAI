@@ -94,8 +94,8 @@ export default function TenantDashboard() {
           <div className="flex items-center gap-6">
             <div className={`transition-all duration-300 ease-in-out ${open ? 'opacity-0 scale-95 -translate-x-4' : 'opacity-100 scale-100 translate-x-0'}`}>
               <img 
-                src="/BlocNiti-LogoNB_1749709973044.png" 
-                alt="BlocNiti AI" 
+                src="/dashboard-logo.png" 
+                alt="BlocNiti Dashboard" 
                 className="h-24 w-auto"
               />
             </div>
