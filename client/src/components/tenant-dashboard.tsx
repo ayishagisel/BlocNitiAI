@@ -89,9 +89,16 @@ export default function TenantDashboard() {
       <div className="dashboard-main">
         {/* Dashboard Header */}
         <div className="dashboard-header">
-          <div>
-            <h1 className="dashboard-title">BlocNiti Dashboard</h1>
-            <p className="dashboard-subtitle">{currentLevel?.description}</p>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/BlocNiti-LogoNB_1749709973044.png" 
+              alt="BlocNiti AI" 
+              className="h-16 w-auto"
+            />
+            <div>
+              <h1 className="dashboard-title">BlocNiti Dashboard</h1>
+              <p className="dashboard-subtitle">{currentLevel?.description}</p>
+            </div>
           </div>
           <div>
             <ButtonGroup>

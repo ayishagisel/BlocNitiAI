@@ -223,13 +223,6 @@ function AppContent() {
         <AppSidebar />
         <SidebarInset className="flex-1 mt-20">
           <div className="flex-1 overflow-auto p-6">
-            <div className="flex justify-center mb-8">
-              <img 
-                src="/BlocNiti-LogoNB_1749709973044.png" 
-                alt="BlocNiti AI" 
-                className="h-32 w-auto"
-              />
-            </div>
             <ProfileIncompleteBanner />
             <Switch>
               <Route path="/home" component={TenantDashboard} />
