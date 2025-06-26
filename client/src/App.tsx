@@ -222,7 +222,7 @@ function AppContent() {
 
         <AppSidebar />
         <SidebarInset className="flex-1 mt-20">
-          <div className="flex-1 overflow-auto p-6">
+          <div className="flex-1 overflow-auto pt-2 px-6 pb-6">
             <ProfileIncompleteBanner />
             <Switch>
               <Route path="/home" component={TenantDashboard} />
