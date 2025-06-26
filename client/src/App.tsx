@@ -31,6 +31,7 @@ import {
   SidebarTrigger,
   SidebarInset 
 } from './components/ui/sidebar';
+import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from "@/components/ui/toaster";
 import { queryClient } from "@/lib/queryClient";
 import { 
@@ -222,19 +223,21 @@ function AppContent() {
 
         <AppSidebar />
         <SidebarInset className="flex-1 mt-20">
-          <div className="flex-1 overflow-y-auto pt-2 px-6 pb-6">
-            <ProfileIncompleteBanner />
-            <Switch>
-              <Route path="/home" component={TenantDashboard} />
-              <Route path="/dashboard" component={TenantDashboard} />
-              <Route path="/repair-reports" component={RepairReports} />
-              <Route path="/legal-dashboard" component={LegalDashboard} />
-              <Route path="/harassment-reports" component={HarassmentReporting} />
-              <Route path="/stakeholder" component={StakeholderDashboard} />
-              <Route path="/profile" component={UserRegistration} />
-              <Route path="*" component={TenantDashboard} />
-            </Switch>
-          </div>
+          <ScrollArea className="h-[calc(100vh-5rem)]">
+            <div className="pt-2 px-6 pb-6">
+              <ProfileIncompleteBanner />
+              <Switch>
+                <Route path="/home" component={TenantDashboard} />
+                <Route path="/dashboard" component={TenantDashboard} />
+                <Route path="/repair-reports" component={RepairReports} />
+                <Route path="/legal-dashboard" component={LegalDashboard} />
+                <Route path="/harassment-reports" component={HarassmentReporting} />
+                <Route path="/stakeholder" component={StakeholderDashboard} />
+                <Route path="/profile" component={UserRegistration} />
+                <Route path="*" component={TenantDashboard} />
+              </Switch>
+            </div>
+          </ScrollArea>
         </SidebarInset>
       </div>
     </SidebarProvider>
