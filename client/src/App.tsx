@@ -210,16 +210,11 @@ function AppContent() {
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
-        {/* Fixed Header with Logo and Toggle */}
+        {/* Fixed Header with Toggle */}
         <div className="fixed top-0 left-0 right-0 z-50 h-20 bg-white border-b border-gray-200 shadow-sm">
           <div className="flex items-center justify-between h-full px-6">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="h-8 w-8" />
-              <img 
-                src="/BlocNiti-LogoNB_1749709973044.png" 
-                alt="BlocNiti AI" 
-                className="h-16 w-auto"
-              />
             </div>
             <UserProfileDropdown />
           </div>
@@ -228,6 +223,13 @@ function AppContent() {
         <AppSidebar />
         <SidebarInset className="flex-1 mt-20">
           <div className="flex-1 overflow-auto p-6">
+            <div className="flex justify-center mb-8">
+              <img 
+                src="/BlocNiti-LogoNB_1749709973044.png" 
+                alt="BlocNiti AI" 
+                className="h-32 w-auto"
+              />
+            </div>
             <ProfileIncompleteBanner />
             <Switch>
               <Route path="/home" component={TenantDashboard} />
