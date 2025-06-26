@@ -788,4 +788,3 @@ export default function UserRegistration() {
     </Card>
   );
 }
-```
