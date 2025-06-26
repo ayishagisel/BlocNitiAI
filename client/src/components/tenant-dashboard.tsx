@@ -89,11 +89,11 @@ export default function TenantDashboard() {
       <div className="dashboard-main">
         {/* Dashboard Header */}
         <div className="dashboard-header">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <img 
               src="/BlocNiti-LogoNB_1749709973044.png" 
               alt="BlocNiti AI" 
-              className="h-16 w-auto"
+              className="h-24 w-auto"
             />
             <div>
               <h1 className="dashboard-title">BlocNiti Dashboard</h1>

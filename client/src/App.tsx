@@ -50,7 +50,9 @@ function AppSidebar() {
 
   return (
     <Sidebar className="border-r border-gray-200">
-      <SidebarContent className="pt-4">
+      {/* Transparent space for logo visibility */}
+      <div className="h-32 bg-transparent"></div>
+      <SidebarContent className="pt-8">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setLocation('/home')}>
