@@ -92,14 +92,16 @@ export default function TenantDashboard() {
         {/* Dashboard Header */}
         <div className="dashboard-header">
           <div className="flex items-center gap-6">
-            <div className={`transition-all duration-300 ease-in-out ${open ? 'opacity-0 scale-100 -translate-x-4' : 'opacity-100 scale-100 translate-x-0'}`}>
-              <img 
-                src="/dashboard-logo.png" 
-                alt="BlocNiti Dashboard" 
-                className="h-24 w-auto"
-              />
-            </div>
-            <div className={`transition-all duration-300 ease-in-out ${open ? '-translate-x-6' : 'translate-x-0'}`}>
+            {!open && (
+              <div className="transition-all duration-300 ease-in-out">
+                <img 
+                  src="/dashboard-logo.png" 
+                  alt="BlocNiti Dashboard" 
+                  className="h-24 w-auto"
+                />
+              </div>
+            )}
+            <div className="transition-all duration-300 ease-in-out">
               <h1 className="dashboard-title">BlocNiti Dashboard</h1>
               <p className="dashboard-subtitle">{currentLevel?.description}</p>
             </div>
