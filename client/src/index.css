@@ -258,9 +258,9 @@ body {
 /* Button Group Styling - Ultra-specific selectors to override Blueprint dimensions */
 .dashboard-container .bp4-button-group .bp4-button,
 .dashboard-container .bp4-button-group .bp5-button {
-  font-size: 2rem !important;
+  font-size: 3rem !important;
   font-weight: 800 !important;
-  padding: 1.5rem 2.5rem !important;
+  padding: 2rem 3rem !important;
   border-radius: 15px !important;
   margin: 0 8px !important;
   background: rgba(255, 255, 255, 0.15) !important;
@@ -269,7 +269,7 @@ body {
   transition: all 0.3s ease !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
-  min-height: 80px !important;
+  min-height: 100px !important;
   height: auto !important;
   width: auto !important;
   line-height: 1.2 !important;
@@ -279,7 +279,7 @@ body {
 .dashboard-container .bp4-button-group .bp5-button .bp5-button-text,
 .dashboard-container .bp4-button-group .bp4-button span,
 .dashboard-container .bp4-button-group .bp5-button span {
-  font-size: 2rem !important;
+  font-size: 3rem !important;
   font-weight: 800 !important;
   color: inherit !important;
   text-transform: uppercase !important;
@@ -297,7 +297,7 @@ body {
   border-color: var(--cyan-cornflower) !important;
   transform: translateY(-3px) scale(1.02) !important;
   box-shadow: 0 6px 16px rgba(23, 126, 188, 0.4) !important;
-  font-size: 2.1rem !important;
+  font-size: 3.2rem !important;
   font-weight: 800 !important;
 }
 
@@ -305,7 +305,7 @@ body {
 .dashboard-container .bp4-button-group .bp5-button:hover .bp5-button-text,
 .dashboard-container .bp4-button-group .bp4-button:hover span,
 .dashboard-container .bp4-button-group .bp5-button:hover span {
-  font-size: 2.1rem !important;
+  font-size: 3.2rem !important;
   font-weight: 800 !important;
 }
 
@@ -314,7 +314,7 @@ body {
   background: linear-gradient(135deg, var(--cyan-cornflower) 0%, #1a8fd4 100%) !important;
   color: white !important;
   border-color: var(--cyan-cornflower) !important;
-  font-size: 2.1rem !important;
+  font-size: 3.2rem !important;
   font-weight: 800 !important;
   transform: translateY(-2px) scale(1.04) !important;
   box-shadow: 0 8px 20px rgba(23, 126, 188, 0.6) !important;
@@ -325,7 +325,7 @@ body {
 .dashboard-container .bp4-button-group .bp5-button.bp5-active .bp5-button-text,
 .dashboard-container .bp4-button-group .bp4-button.bp4-active span,
 .dashboard-container .bp4-button-group .bp5-button.bp5-active span {
-  font-size: 2.1rem !important;
+  font-size: 3.2rem !important;
   font-weight: 800 !important;
   color: white !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
