@@ -90,7 +90,7 @@ export default function TenantDashboard() {
     <div className="dashboard-container">
       <div className="dashboard-main">
         {/* Dashboard Header */}
-        <div className="dashboard-header" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '2rem' }}>
+        <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <div className="flex items-center gap-6">
             {!open && (
               <div className="transition-all duration-300 ease-in-out">
@@ -106,7 +106,7 @@ export default function TenantDashboard() {
               <p className="dashboard-subtitle">{currentLevel?.description}</p>
             </div>
           </div>
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ButtonGroup>
               {dashboardLevels.map(level => (
                 <Button
