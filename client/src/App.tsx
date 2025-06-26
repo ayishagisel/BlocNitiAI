@@ -29,7 +29,8 @@ import {
   SidebarMenuItem, 
   SidebarMenuButton, 
   SidebarTrigger,
-  SidebarInset 
+  SidebarInset,
+  useSidebar 
 } from './components/ui/sidebar';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Toaster } from "@/components/ui/toaster";
@@ -47,12 +48,21 @@ import { Button } from "@/components/ui/button";
 
 function AppSidebar() {
   const [, setLocation] = useLocation();
+  const { open } = useSidebar();
 
   return (
     <Sidebar className="border-r border-gray-200">
-      {/* Transparent space for logo visibility */}
-      <div className="h-32 bg-transparent"></div>
-      <SidebarContent className="pt-8">
+      {/* Logo container - shows when sidebar is open */}
+      <SidebarHeader className="p-4">
+        <div className={`transition-all duration-300 ease-in-out ${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+          <img 
+            src="/BlocNiti-LogoNB_1749709973044.png" 
+            alt="BlocNiti AI" 
+            className="h-16 w-auto mx-auto"
+          />
+        </div>
+      </SidebarHeader>
+      <SidebarContent className="pt-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setLocation('/home')}>

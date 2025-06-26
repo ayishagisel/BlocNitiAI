@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Card, H2, H4, Button, ButtonGroup, Icon, Text } from '@blueprintjs/core';
+import { useSidebar } from './ui/sidebar';
 
 interface DashboardLevel {
   id: string;
@@ -19,6 +20,7 @@ const dashboardLevels: DashboardLevel[] = [
 
 export default function TenantDashboard() {
   const [activeLevel, setActiveLevel] = useState('personal');
+  const { open } = useSidebar();
 
   const getStatsForLevel = (level: string) => {
     switch (level) {
@@ -90,12 +92,14 @@ export default function TenantDashboard() {
         {/* Dashboard Header */}
         <div className="dashboard-header">
           <div className="flex items-center gap-6">
-            <img 
-              src="/BlocNiti-LogoNB_1749709973044.png" 
-              alt="BlocNiti AI" 
-              className="h-24 w-auto"
-            />
-            <div>
+            <div className={`transition-all duration-300 ease-in-out ${open ? 'opacity-0 scale-95 -translate-x-4' : 'opacity-100 scale-100 translate-x-0'}`}>
+              <img 
+                src="/BlocNiti-LogoNB_1749709973044.png" 
+                alt="BlocNiti AI" 
+                className="h-24 w-auto"
+              />
+            </div>
+            <div className={`transition-all duration-300 ease-in-out ${open ? '-translate-x-6' : 'translate-x-0'}`}>
               <h1 className="dashboard-title">BlocNiti Dashboard</h1>
               <p className="dashboard-subtitle">{currentLevel?.description}</p>
             </div>
